@@ -1,0 +1,77 @@
+{
+  "project_info": {
+    "project_number": "613341303237",
+    "firebase_url": "https://app-food-delivery.firebaseio.com",
+    "project_id": "app-food-delivery",
+    "storage_bucket": "app-food-delivery.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:613341303237:android:3578b7ce1a4f5013c53bac",
+        "android_client_info": {
+          "package_name": "br.com.lima.food_delivery_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "613341303237-agdtt07nacrqjle6eqjgjpu1mir91mh1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.com.lima.food_delivery_app",
+            "certificate_hash": "c69f3178093a444dec0fdf9661f887e8a9ac71e0"
+          }
+        },
+        {
+          "client_id": "613341303237-2a4f634klrtn7emu47tq2phl60c2fjm3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQVmPCGO5B9OU8lqR-S4wDpO28YSufl6g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "613341303237-2a4f634klrtn7emu47tq2phl60c2fjm3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:613341303237:android:1a0ee04b67dcbb40c53bac",
+        "android_client_info": {
+          "package_name": "com.example.gerente_loja"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "613341303237-2a4f634klrtn7emu47tq2phl60c2fjm3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQVmPCGO5B9OU8lqR-S4wDpO28YSufl6g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "613341303237-2a4f634klrtn7emu47tq2phl60c2fjm3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
