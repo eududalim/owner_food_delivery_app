@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gerente_loja/blocs/login_bloc.dart';
-import 'package:gerente_loja/screens/home_screen.dart';
-import 'package:gerente_loja/widgets/input_decoration.dart';
+import 'package:gerente_loja/blocs/sign_in_google.dart';
+import 'package:gerente_loja/screens/home/home_screen.dart';
+import 'package:gerente_loja/screens/sign_up/sign_up_screen.dart';
+import 'package:gerente_loja/screens/login/widgets/input_field.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -11,9 +13,6 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _loginBloc = LoginBloc();
-
-  final _emailController = TextEditingController();
-  final _passController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -29,6 +28,9 @@ class _LoginScreenState extends State<LoginScreen> {
               MaterialPageRoute(builder: (context) => HomeScreen()));
           break;
         case LoginState.FAIL:
+          Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (context) => LoginScreen(),
+          ));
           showDialog(
               context: context,
               builder: (context) => AlertDialog(
@@ -49,7 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Row _header() {
-    Row(
+    return Row(
       children: [
         Icon(
           Icons.store,
@@ -82,6 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: Colors.grey[50],
       body: StreamBuilder<LoginState>(
           stream: _loginBloc.outState,
+          // ignore: missing_return
           builder: (context, snapshot) {
             switch (snapshot.data) {
               case LoginState.LOADING:
@@ -98,63 +101,54 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: [
                         _header(),
                         SizedBox(height: 32),
-                        TextFormField(
-                          controller: _emailController,
-                          decoration: inputDecorationCustom(
-                              'Email', Icons.alternate_email, context),
+                        InputField(
+                          icon: Icons.alternate_email,
+                          hint: "Email",
+                          obscure: false,
+                          stream: _loginBloc.outEmail,
+                          onChanged: _loginBloc.changeEmail,
                         ),
                         SizedBox(height: 32),
-                        TextFormField(
-                          decoration: inputDecorationCustom(
-                              'Senha', Icons.lock_outline, context),
-                          obscureText: true,
-                          controller: _passController,
+                        InputField(
+                          icon: Icons.lock_outline,
+                          hint: "Senha",
+                          obscure: true,
+                          stream: _loginBloc.outPassword,
+                          onChanged: _loginBloc.changePassword,
                         ),
                         Align(
                           alignment: Alignment.centerRight,
                           child: FlatButton(
                               padding: EdgeInsets.zero,
-                              onPressed: () {
-                                if (_emailController.text.isEmpty)
-                                  _scaffoldKey.currentState
-                                      .showSnackBar(SnackBar(
-                                    content: Text(
-                                        "Insira seu e-mail para recuperação!"),
-                                    backgroundColor: Colors.redAccent,
-                                    duration: Duration(seconds: 2),
-                                  ));
-                                else {
-                                  //    model.recoverPass(_emailController.text);
-                                  _scaffoldKey.currentState
-                                      .showSnackBar(SnackBar(
-                                    content: Text("Confira seu e-mail!"),
-                                    backgroundColor: primaryColor,
-                                    duration: Duration(seconds: 2),
-                                  ));
-                                }
-                              },
+                              onPressed: () {},
                               textColor: Colors.black54,
                               child: Text('Esqueceu a senha?',
                                   style:
                                       TextStyle(fontWeight: FontWeight.bold))),
                         ),
                         // Botão de Entrar
-                        InkWell(
-                          onTap: () {},
-                          child: Container(
-                            height: 40,
-                            alignment: Alignment.center,
-                            padding: EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(30),
-                                color: Theme.of(context).primaryColor),
-                            child: Text(
-                              'Entrar',
-                              textAlign: TextAlign.center,
-                              style:
-                                  TextStyle(fontSize: 18, color: Colors.white),
-                            ),
-                          ),
+                        StreamBuilder<bool>(
+                          stream: _loginBloc.outSubmitValid,
+                          builder: (context, snapshot) {
+                            return InkWell(
+                              onTap:
+                                  snapshot.hasData ? _loginBloc.submit : null,
+                              child: Container(
+                                height: 50,
+                                alignment: Alignment.center,
+                                padding: EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(30),
+                                    color: Theme.of(context).primaryColor),
+                                child: Text(
+                                  'Entrar',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontSize: 18, color: Colors.white),
+                                ),
+                              ),
+                            );
+                          },
                         ),
                         SizedBox(height: 15),
                         //Linha do botão para criar conta
@@ -163,7 +157,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           children: [
                             Text('Não tem cadastro ainda?'),
                             FlatButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => SignUpScreen(),
+                                  ));
+                                },
                                 child: Text(
                                   'Crie um conta',
                                   style: TextStyle(
@@ -180,40 +178,40 @@ class _LoginScreenState extends State<LoginScreen> {
                         Divider(),
                         SizedBox(height: 15),
                         //Botão do Sign com Google
-                        InkWell(
-                          onTap: () {
-                            //    model.signInGoogle(onSuccess: _cadAddress, onFail: _onFail);
-                            // Navigator.of(context).pop();
+                        OutlineButton(
+                          splashColor: Colors.grey,
+                          onPressed: () {
+                            signInWithGoogle().whenComplete(() {
+                              Navigator.of(context)
+                                  .pushReplacement(MaterialPageRoute(
+                                builder: (context) => HomeScreen(),
+                              ));
+                            });
                           },
-                          child: Container(
-                            height: 40,
-                            decoration: BoxDecoration(
-                                border:
-                                    Border.all(color: primaryColor, width: 2.0),
-                                borderRadius: BorderRadius.circular(25)),
-                            child: Stack(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(40)),
+                          highlightElevation: 0,
+                          borderSide: BorderSide(color: Colors.grey),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 6),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                Container(
-                                  alignment: Alignment.centerLeft,
-                                  padding: EdgeInsets.all(5),
-                                  child: Image.asset(
-                                    'ss/google-icon.png',
-                                    errorBuilder:
-                                        (context, error, stackTrace) =>
-                                            Icon(Icons.error_outline),
-                                    height: 25,
-                                  ),
+                                Image(
+                                  image: AssetImage("assets/google-icon.png"),
+                                  height: 35,
                                 ),
-                                Container(
-                                  alignment: Alignment.center,
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 10),
                                   child: Text(
-                                    'Entrar com o Google',
-                                    textAlign: TextAlign.center,
+                                    'Entrar com Google',
                                     style: TextStyle(
-                                        fontSize: 16.0,
-                                        fontWeight: FontWeight.w400),
+                                      fontSize: 20,
+                                      color: Colors.grey,
+                                    ),
                                   ),
-                                ),
+                                )
                               ],
                             ),
                           ),
@@ -221,6 +219,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       ],
                     ),
                   ),
+                );
+              default:
+                return Container(
+                  width: 0,
+                  height: 0,
                 );
             } // switch
           }),

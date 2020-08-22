@@ -32,6 +32,7 @@ class ImageSourceSheet extends StatelessWidget {
             child: Text("Câmera"),
             onPressed: () async {
               File image =
+                  // ignore: deprecated_member_use
                   await ImagePicker.pickImage(source: ImageSource.camera);
               imageSelected(image);
             },
@@ -40,6 +41,7 @@ class ImageSourceSheet extends StatelessWidget {
             child: Text("Galeria"),
             onPressed: () async {
               File image =
+                  // ignore: deprecated_member_use
                   await ImagePicker.pickImage(source: ImageSource.gallery);
               imageSelected(image);
             },

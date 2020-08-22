@@ -52,6 +52,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "613341303237-v912agi7rpoalev2pbukpn7mos3099mu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gerente_loja",
+            "certificate_hash": "c69f3178093a444dec0fdf9661f887e8a9ac71e0"
+          }
+        },
+        {
           "client_id": "613341303237-2a4f634klrtn7emu47tq2phl60c2fjm3.apps.googleusercontent.com",
           "client_type": 3
         }

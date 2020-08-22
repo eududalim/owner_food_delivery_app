@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gerente_loja/blocs/login_bloc.dart';
-import 'package:gerente_loja/screens/home_screen.dart';
-import 'package:gerente_loja/screens/login_screen.dart';
+import 'package:gerente_loja/screens/home/home_screen.dart';
+import 'package:gerente_loja/screens/login/login_screen.dart';
 import 'package:splashscreen/splashscreen.dart';
 
 class SplashScreenPage extends StatefulWidget {
