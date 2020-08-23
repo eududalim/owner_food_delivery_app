@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gerente_loja/blocs/login_bloc.dart';
-import 'package:gerente_loja/blocs/sign_in_google.dart';
 import 'package:gerente_loja/screens/home/home_screen.dart';
-import 'package:gerente_loja/screens/sign_up/sign_up_screen.dart';
-import 'package:gerente_loja/screens/login/widgets/input_field.dart';
+import 'package:gerente_loja/screens/login/widgets/button_sign_in.dart';
+import 'package:gerente_loja/screens/login/widgets/button_sign_up.dart';
+import 'package:gerente_loja/widgets/input_field.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -28,14 +28,12 @@ class _LoginScreenState extends State<LoginScreen> {
               MaterialPageRoute(builder: (context) => HomeScreen()));
           break;
         case LoginState.FAIL:
-          Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (context) => LoginScreen(),
-          ));
-          showDialog(
+          showCupertinoDialog(
+              barrierDismissible: true,
               context: context,
-              builder: (context) => AlertDialog(
+              builder: (context) => CupertinoAlertDialog(
                     title: Text("Erro"),
-                    content: Text("Você não possui os privilégios necessários"),
+                    content: Text("Você ainda não possui uma conta comercial!"),
                   ));
           break;
         case LoginState.LOADING:
@@ -77,8 +75,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Color primaryColor = Theme.of(context).primaryColor;
-
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Colors.grey[50],
@@ -102,6 +98,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         _header(),
                         SizedBox(height: 32),
                         InputField(
+                          done: false,
+                          keyboardType: TextInputType.emailAddress,
                           icon: Icons.alternate_email,
                           hint: "Email",
                           obscure: false,
@@ -110,6 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         SizedBox(height: 32),
                         InputField(
+                          done: true,
                           icon: Icons.lock_outline,
                           hint: "Senha",
                           obscure: true,
@@ -131,91 +130,33 @@ class _LoginScreenState extends State<LoginScreen> {
                           stream: _loginBloc.outSubmitValid,
                           builder: (context, snapshot) {
                             return InkWell(
-                              onTap:
-                                  snapshot.hasData ? _loginBloc.submit : null,
-                              child: Container(
-                                height: 50,
-                                alignment: Alignment.center,
-                                padding: EdgeInsets.all(5),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(30),
-                                    color: Theme.of(context).primaryColor),
-                                child: Text(
-                                  'Entrar',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontSize: 18, color: Colors.white),
-                                ),
-                              ),
-                            );
+                                onTap: snapshot.hasData
+                                    ? _loginBloc.submit
+                                    : () {
+                                        Scaffold.of(context)
+                                            .showSnackBar(SnackBar(
+                                          content: Text(
+                                            'Preencha os campos corretamente!',
+                                            textAlign: TextAlign.center,
+                                            textScaleFactor: 1.1,
+                                          ),
+                                          backgroundColor: Colors.redAccent,
+                                        ));
+                                      },
+                                child: ButtonSignIn());
                           },
                         ),
                         SizedBox(height: 15),
-                        //Linha do botão para criar conta
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('Não tem cadastro ainda?'),
-                            FlatButton(
-                                onPressed: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => SignUpScreen(),
-                                  ));
-                                },
-                                child: Text(
-                                  'Crie um conta',
-                                  style: TextStyle(
-                                      color: primaryColor,
-                                      fontWeight: FontWeight.bold),
-                                ))
-                          ],
-                        ),
-                        Divider(),
+                        ButtonSignUp(),
+                        /* 
+                             Divider(),
                         Text(
-                          'ou',
+                          '',
                           textAlign: TextAlign.center,
                         ),
                         Divider(),
                         SizedBox(height: 15),
-                        //Botão do Sign com Google
-                        OutlineButton(
-                          splashColor: Colors.grey,
-                          onPressed: () {
-                            signInWithGoogle().whenComplete(() {
-                              Navigator.of(context)
-                                  .pushReplacement(MaterialPageRoute(
-                                builder: (context) => HomeScreen(),
-                              ));
-                            });
-                          },
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(40)),
-                          highlightElevation: 0,
-                          borderSide: BorderSide(color: Colors.grey),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 6),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Image(
-                                  image: AssetImage("assets/google-icon.png"),
-                                  height: 35,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 10),
-                                  child: Text(
-                                    'Entrar com Google',
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
+                        Botão do Sign com Google */
                       ],
                     ),
                   ),

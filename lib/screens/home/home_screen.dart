@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:gerente_loja/blocs/login_bloc.dart';
 import 'package:gerente_loja/blocs/orders_bloc.dart';
 import 'package:gerente_loja/blocs/user_bloc.dart';
+import 'package:gerente_loja/tabs/my_account/my_account_tab.dart';
 import 'widgets/custom_bottom_navigation_bar.dart';
 import 'widgets/custom_floating_button.dart';
 import 'package:gerente_loja/screens/login/login_screen.dart';
 import 'package:gerente_loja/tabs/orders/orders_tab.dart';
 import 'package:gerente_loja/tabs/products/products_tab.dart';
 import 'package:gerente_loja/tabs/users/users_tab.dart';
-import 'package:gerente_loja/tabs/my_account/my_account_tab.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -75,7 +75,8 @@ class _HomeScreenState extends State<HomeScreen> {
             );
           } else {
             return CupertinoAlertDialog(
-              content: Text('Você não possui os privilegios necessarios'),
+              title: Text('Erro'),
+              content: Text('Você ainda não possui uma conta comercial!'),
               actions: [
                 FlatButton(
                     onPressed: () {

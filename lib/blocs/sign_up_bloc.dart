@@ -1,12 +1,17 @@
+import 'dart:developer';
+
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:gerente_loja/validators/login_validators.dart';
 import 'package:gerente_loja/validators/signup_validator.dart';
 import 'package:rxdart/rxdart.dart';
 
-enum SignUpState { LOADING, SUCESS, FAIL, IDLE }
+enum SignUpState { LOADING, SUCCESS, FAIL, IDLE }
 
-class SignUpBloc extends BlocBase with SignUpValidator {
+class SignUpBloc extends BlocBase with SignUpValidator, LoginValidators {
+  FirebaseUser _firebaseUser;
+
   final _emailController = BehaviorSubject<String>();
   final _passwordController = BehaviorSubject<String>();
   final _nameController = BehaviorSubject<String>();
@@ -20,25 +25,18 @@ class SignUpBloc extends BlocBase with SignUpValidator {
       _passwordController.stream.transform(validatePassword);
   Stream<String> get outName => _nameController.stream.transform(validateName);
   Stream<String> get outNameStore =>
-      _nameStoreController.stream.transform(validateName);
+      _nameStoreController.stream.transform(validateNameStore);
   Stream<String> get outCpf => _cpfController.stream.transform(validateCpf);
   Stream<SignUpState> get outState => _stateController.stream;
 
-  Stream<bool> get outSubmitValid => Observable.combineLatest5(
-          outEmail, outName, outNameStore, outCpf, outPassword,
-          (a, b, c, d, e) {
-        if (a.isEmpty || b.isEmpty || c.isEmpty || d.isEmpty || e.isEmpty) {
-          return false;
-        } else {
-          return true;
-        }
-      });
+  Stream<bool> get outSubmitValid => Observable.combineLatest5(outEmail,
+      outName, outNameStore, outCpf, outPassword, (a, b, c, d, e) => true);
 
   Function(String) get changeEmail => _emailController.sink.add;
   Function(String) get changePassword => _passwordController.sink.add;
   Function(String) get changeName => _nameController.sink.add;
   Function(String) get changeCpf => _cpfController.sink.add;
-  Function(String) get changeNameStore => _cpfController.sink.add;
+  Function(String) get changeNameStore => _nameStoreController.sink.add;
 
   @override
   void dispose() {
@@ -50,27 +48,33 @@ class SignUpBloc extends BlocBase with SignUpValidator {
     _nameStoreController.close();
   }
 
-  void signUp() {
+  void _saveData(FirebaseUser user, name, cpf, store) async {
+    await Firestore.instance.collection('admins').document(user.uid).setData(
+        {'name': name, 'email': user.email, 'cpf': cpf, 'store': store});
+  }
+
+  void signUp() async {
     final email = _emailController.value;
     final password = _passwordController.value;
     final name = _nameController.value;
     final cpf = _cpfController.value;
     final store = _nameStoreController.value;
 
-    _stateController.add(SignUpState.LOADING);
-
-    FirebaseAuth.instance
-        .createUserWithEmailAndPassword(email: email, password: password)
-        .catchError((e) {
+    if (email == null) {
       _stateController.add(SignUpState.FAIL);
-    }).whenComplete(() {
-      _stateController.add(SignUpState.SUCESS);
-
-      FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password);
-
-      Firestore.instance.collection('admins').add(
-          {'adminName': name, 'email': email, 'cpf': cpf, 'nameStore': store});
-    });
+      return;
+    } else {
+      _stateController.add(SignUpState.LOADING);
+      await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password)
+          .then((value) async {
+        _firebaseUser = value.user;
+        _saveData(_firebaseUser, name, cpf, store);
+        _stateController.add(SignUpState.SUCCESS);
+      }).catchError((e) {
+        log('Erro ao criar usuario! : ' + e.toString());
+        _stateController.add(SignUpState.FAIL);
+      });
+    }
   }
 }

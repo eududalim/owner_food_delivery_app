@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 class CustomBottomNavigationBar extends StatelessWidget {
   CustomBottomNavigationBar(this._page, this._pageController);
 
-  int _page;
-  PageController _pageController;
+  final int _page;
+  final PageController _pageController;
 
   @override
   Widget build(BuildContext context) {

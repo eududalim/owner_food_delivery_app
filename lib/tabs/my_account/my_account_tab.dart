@@ -1,19 +1,24 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:gerente_loja/blocs/admin_data_bloc.dart';
 
-import 'account_tile.dart';
+class MyAccountTab extends StatefulWidget {
+  @override
+  _MyAccountTabState createState() => _MyAccountTabState();
+}
 
-class MyAccountTab extends StatelessWidget {
+class _MyAccountTabState extends State<MyAccountTab> {
+  AdminDataBloc _adminDataBloc = AdminDataBloc();
+
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<DocumentSnapshot>(
-        stream: null,
+    return StreamBuilder<Map<String, dynamic>>(
+        stream: _adminDataBloc.outAdminData,
         builder: (context, snapshot) {
-          return ListView.builder(
-            itemBuilder: (context, index) {
-              return AccountTile();
-            },
-          );
+          return ListView(children: [
+            ListTile(
+              title: Text('Nome pessoal: '),
+            )
+          ]);
         });
   }
 }
