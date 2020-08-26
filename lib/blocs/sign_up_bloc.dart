@@ -1,8 +1,6 @@
-import 'dart:developer';
-
 import 'package:bloc_pattern/bloc_pattern.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:gerente_loja/models/user_admin_model.dart';
+import 'package:gerente_loja/repositories/user_admin_repo.dart';
 import 'package:gerente_loja/validators/login_validators.dart';
 import 'package:gerente_loja/validators/signup_validator.dart';
 import 'package:rxdart/rxdart.dart';
@@ -10,7 +8,7 @@ import 'package:rxdart/rxdart.dart';
 enum SignUpState { LOADING, SUCCESS, FAIL, IDLE }
 
 class SignUpBloc extends BlocBase with SignUpValidator, LoginValidators {
-  FirebaseUser _firebaseUser;
+  UserAdminRepo _adminRepo;
 
   final _emailController = BehaviorSubject<String>();
   final _passwordController = BehaviorSubject<String>();
@@ -29,8 +27,8 @@ class SignUpBloc extends BlocBase with SignUpValidator, LoginValidators {
   Stream<String> get outCpf => _cpfController.stream.transform(validateCpf);
   Stream<SignUpState> get outState => _stateController.stream;
 
-  Stream<bool> get outSubmitValid => Observable.combineLatest5(outEmail,
-      outName, outNameStore, outCpf, outPassword, (a, b, c, d, e) => true);
+/*   Stream<bool> get outSubmitValid => Observable.combineLatest5(outEmail,
+      outName, outNameStore, outCpf, outPassword, (a, b, c, d, e) => true); */
 
   Function(String) get changeEmail => _emailController.sink.add;
   Function(String) get changePassword => _passwordController.sink.add;
@@ -48,33 +46,26 @@ class SignUpBloc extends BlocBase with SignUpValidator, LoginValidators {
     _nameStoreController.close();
   }
 
-  void _saveData(FirebaseUser user, name, cpf, store) async {
-    await Firestore.instance.collection('admins').document(user.uid).setData(
-        {'name': name, 'email': user.email, 'cpf': cpf, 'store': store});
-  }
-
   void signUp() async {
-    final email = _emailController.value;
-    final password = _passwordController.value;
-    final name = _nameController.value;
-    final cpf = _cpfController.value;
-    final store = _nameStoreController.value;
+    UserAdminModel user;
 
-    if (email == null) {
+    user.email = _emailController.value;
+    user.password = _passwordController.value;
+    user.name = _nameController.value;
+    user.cpf = _cpfController.value;
+    user.nameStore = _nameStoreController.value;
+
+    if (user.email == null || user.email.isEmpty) {
       _stateController.add(SignUpState.FAIL);
       return;
     } else {
       _stateController.add(SignUpState.LOADING);
-      await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password)
-          .then((value) async {
-        _firebaseUser = value.user;
-        _saveData(_firebaseUser, name, cpf, store);
-        _stateController.add(SignUpState.SUCCESS);
-      }).catchError((e) {
-        log('Erro ao criar usuario! : ' + e.toString());
-        _stateController.add(SignUpState.FAIL);
-      });
+
+      bool success = await _adminRepo.createUser(user);
+
+      success
+          ? _stateController.add(SignUpState.SUCCESS)
+          : _stateController.add(SignUpState.FAIL);
     }
   }
 }
