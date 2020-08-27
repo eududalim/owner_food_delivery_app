@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gerente_loja/models/user_admin_model.dart';
@@ -18,24 +20,29 @@ class UserAdminRepo {
 
   Future<bool> createUser(UserAdminModel user) async {
     if (await _haveAccount(user.email, user.password)) {
+      log('USUARIO JÁ CADASTRADO NO FIREBASE. SALVANDO USUARIO COMO ADMIN...');
       _saveData(user, _firebaseUser.uid);
       return true;
     } else {
+      log('USUARIO NÃO CADASTRADO NO BANCO DE DADOS AINDA. CRIANDO USUARIO...');
       await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
               email: user.email, password: user.password)
           .then((value) {
         _firebaseUser = value.user;
         _saveData(user, _firebaseUser.uid);
+        log('USUARIO CRIADO COM SUCESSO!');
         return true;
       }).catchError((e) {
+        log('ERRO AO CRIAR USUARIO!');
         return false;
       });
       return false;
     }
   }
 
-  Future<bool> _haveAccount(email, password) => FirebaseAuth.instance
+  Future<bool> _haveAccount(email, password) async =>
+      await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password)
           .then((value) {
         _firebaseUser = value.user;

@@ -8,7 +8,7 @@ import 'package:rxdart/rxdart.dart';
 enum SignUpState { LOADING, SUCCESS, FAIL, IDLE }
 
 class SignUpBloc extends BlocBase with SignUpValidator, LoginValidators {
-  UserAdminRepo _adminRepo;
+  final _adminRepo = UserAdminRepo();
 
   final _emailController = BehaviorSubject<String>();
   final _passwordController = BehaviorSubject<String>();
@@ -47,13 +47,13 @@ class SignUpBloc extends BlocBase with SignUpValidator, LoginValidators {
   }
 
   void signUp() async {
-    UserAdminModel user;
-
-    user.email = _emailController.value;
-    user.password = _passwordController.value;
-    user.name = _nameController.value;
-    user.cpf = _cpfController.value;
-    user.nameStore = _nameStoreController.value;
+    UserAdminModel user = UserAdminModel(
+      email: _emailController.value,
+      password: _passwordController.value,
+      name: _nameController.value,
+      cpf: _cpfController.value,
+      nameStore: _nameStoreController.value,
+    );
 
     if (user.email == null || user.email.isEmpty) {
       _stateController.add(SignUpState.FAIL);
