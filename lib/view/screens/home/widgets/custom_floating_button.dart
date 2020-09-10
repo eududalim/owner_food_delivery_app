@@ -12,8 +12,6 @@ class CustomFloatingButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     switch (_page) {
-      case 0:
-        return null;
       case 1:
         return SpeedDial(
           child: Icon(Icons.sort),
@@ -55,7 +53,7 @@ class CustomFloatingButton extends StatelessWidget {
           },
         );
       default:
-        return null;
+        return Container();
     }
   }
 }

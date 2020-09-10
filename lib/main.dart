@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gerente_loja/view/screens/sign_up/sign_up_screen.dart';
 import 'package:gerente_loja/view/screens/splash_screen.dart';
 
 void main() => runApp(MyApp());
@@ -11,7 +10,7 @@ class MyApp extends StatelessWidget {
       title: 'Vem Delivery - Anunciante',
       theme: ThemeData(primaryColor: Colors.teal[400]),
       debugShowCheckedModeBanner: false,
-      home: SignUpScreen(),
+      home: SplashScreenPage(),
     );
   }
 }

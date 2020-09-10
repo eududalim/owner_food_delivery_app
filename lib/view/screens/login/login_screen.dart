@@ -12,7 +12,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _loginBloc = LoginBloc();
+  LoginBloc _loginBloc;
 
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -20,25 +20,12 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
+    _loginBloc = LoginBloc();
 
     _loginBloc.outState.listen((state) {
-      switch (state) {
-        case LoginState.SUCCESS:
-          Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => HomeScreen()));
-          break;
-        case LoginState.FAIL:
-          showCupertinoDialog(
-              barrierDismissible: true,
-              context: context,
-              builder: (context) => CupertinoAlertDialog(
-                    title: Text("Erro"),
-                    content: Text("Você ainda não possui uma conta comercial!"),
-                  ));
-          break;
-        case LoginState.LOADING:
-        case LoginState.IDLE:
-      }
+      if (state == LoginState.SUCCESS)
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => HomeScreen()));
     });
   }
 
@@ -80,14 +67,22 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: Colors.grey[50],
       body: StreamBuilder<LoginState>(
           stream: _loginBloc.outState,
-          // ignore: missing_return
-          builder: (context, snapshot) {
-            switch (snapshot.data) {
+          builder: (context, state) {
+            switch (state.data) {
               case LoginState.LOADING:
                 return Center(child: CircularProgressIndicator());
-              case LoginState.IDLE:
-              case LoginState.SUCCESS:
+                break;
               case LoginState.FAIL:
+              case LoginState.IDLE:
+                if (state.data == LoginState.FAIL) {
+                  showCupertinoDialog(
+                      context: context,
+                      barrierDismissible: true,
+                      builder: (context) => CupertinoAlertDialog(
+                            title: Text('Erro'),
+                            content: Text('Usuário não encontrado!'),
+                          ));
+                }
                 return Form(
                   key: _formKey,
                   child: Center(
@@ -162,11 +157,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 );
               default:
-                return Container(
-                  width: 0,
-                  height: 0,
-                );
             } // switch
+            return Container();
           }),
     );
   }

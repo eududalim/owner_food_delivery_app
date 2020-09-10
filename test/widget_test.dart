@@ -5,24 +5,27 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gerente_loja/models/user_admin_model.dart';
-import 'package:gerente_loja/repositories/user_admin_repo.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  final _repoAdmin = UserAdminRepo();
-  final _user = UserAdminModel(
-      name: 'eduarda lima',
-      nameStore: 'loja da duda',
-      cpf: '0021516220',
-      email: 'teste@teste.com',
-      password: '12345678');
+  test('Organizando Orders', () async {
+    String uid = '68UWBmeJItNANDMFkjQhaf3GPwn1';
+    QuerySnapshot querySnapshot =
+        await Firestore.instance.collection('orders').getDocuments();
 
-  test(
-      'Deve criar um usuario no firebase e salvar seus dados no Banco de Dados',
-      () async {
-    expect(await _repoAdmin.createUser(_user), true);
+    querySnapshot.documents.map((doc) async {
+      print(doc.documentID);
+      await Firestore.instance
+          .collection('admins')
+          .document(uid)
+          .collection('orders')
+          .document(doc.documentID)
+          .setData(doc.data);
+    });
+
+    print('Finish');
   });
 }

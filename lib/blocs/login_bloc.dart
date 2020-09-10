@@ -1,7 +1,8 @@
 import 'dart:async';
 
 import 'package:bloc_pattern/bloc_pattern.dart';
-import 'package:gerente_loja/repositories/user_admin_repo.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:gerente_loja/models/user_admin_model.dart';
 import 'package:gerente_loja/validators/login_validators.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,8 +10,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 enum LoginState { IDLE, LOADING, SUCCESS, FAIL }
 
 class LoginBloc extends BlocBase with LoginValidators {
-  UserAdminRepo _adminRepo;
-
   final _emailController = BehaviorSubject<String>();
   final _passwordController = BehaviorSubject<String>();
   final _stateController = BehaviorSubject<LoginState>();
@@ -29,14 +28,26 @@ class LoginBloc extends BlocBase with LoginValidators {
 
   StreamSubscription _streamSubscription;
 
+  UserAdminModel userModel = UserAdminModel();
+
   LoginBloc() {
     _streamSubscription =
         FirebaseAuth.instance.onAuthStateChanged.listen((user) async {
       if (user != null) {
-        if (await _adminRepo.isAdmin(user.uid)) {
+        if (await verifyPrivileges(user)) {
+          Firestore.instance
+              .collection('admins')
+              .document(user.uid)
+              .get()
+              .then((value) {
+            userModel.name = value.data['name'];
+            userModel.cpf = value.data['cpf'];
+            userModel.nameStore = value.data['store'];
+            userModel.email = value.data['email'];
+          });
           _stateController.add(LoginState.SUCCESS);
         } else {
-          _adminRepo.signOut();
+          FirebaseAuth.instance.signOut();
           _stateController.add(LoginState.FAIL);
         }
       } else {
@@ -45,26 +56,26 @@ class LoginBloc extends BlocBase with LoginValidators {
     });
   }
 
-  void submit() async {
+  void submit() {
     final email = _emailController.value;
     final password = _passwordController.value;
 
     _stateController.add(LoginState.LOADING);
 
-    bool success = await _adminRepo.signIn(email, password);
-
-    success
-        ? _stateController.add(LoginState.SUCCESS)
-        : _stateController.add(LoginState.FAIL);
-/* 
     FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password)
         .catchError((e) {
       _stateController.add(LoginState.FAIL);
-    }); */
+    });
+
+    _stateController.add(LoginState.SUCCESS);
   }
 
-/* 
+  void signOut() {
+    FirebaseAuth.instance.signOut();
+    _stateController.add(LoginState.IDLE);
+  }
+
   Future<bool> verifyPrivileges(FirebaseUser user) async {
     return await Firestore.instance
         .collection("admins")
@@ -79,7 +90,7 @@ class LoginBloc extends BlocBase with LoginValidators {
     }).catchError((e) {
       return false;
     });
-  } */
+  }
 
   @override
   void dispose() {

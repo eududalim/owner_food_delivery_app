@@ -8,21 +8,29 @@ class CustomBottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BottomNavigationBar(
-        currentIndex: _page,
-        onTap: (p) {
-          _pageController.animateToPage(p,
-              duration: Duration(milliseconds: 500), curve: Curves.ease);
-        },
-        items: [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.people_outline), title: Text("Clientes")),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.shopping_cart), title: Text("Pedidos")),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.list), title: Text("Produtos")),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline), title: Text('Minha conta'))
-        ]);
+    return Theme(
+      data: Theme.of(context).copyWith(
+          canvasColor: Theme.of(context).primaryColor,
+          primaryColor: Colors.white,
+          textTheme: Theme.of(context)
+              .textTheme
+              .copyWith(caption: TextStyle(color: Colors.white54))),
+      child: BottomNavigationBar(
+          currentIndex: _page,
+          onTap: (p) {
+            _pageController.animateToPage(p,
+                duration: Duration(milliseconds: 500), curve: Curves.ease);
+          },
+          items: [
+            BottomNavigationBarItem(
+                icon: Icon(Icons.people_outline), title: Text("Clientes")),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.shopping_cart), title: Text("Pedidos")),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.list), title: Text("Produtos")),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.person_outline), title: Text('Minha conta'))
+          ]),
+    );
   }
 }

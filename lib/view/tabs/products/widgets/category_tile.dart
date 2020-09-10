@@ -23,55 +23,93 @@ class CategoryTile extends StatelessWidget {
                       ));
             },
             child: CircleAvatar(
-              backgroundImage: NetworkImage(category.data["icon"]),
-              backgroundColor: Colors.transparent,
+              // backgroundImage: NetworkImage(category.data["icon"]),
+              backgroundColor: Colors.pinkAccent,
             ),
           ),
+
+          //Titulo da categoria
+
           title: Text(
-            category.data["title"],
+            category.documentID,
             style:
-                TextStyle(color: Colors.grey[850], fontWeight: FontWeight.w500),
+                TextStyle(color: Colors.grey[850], fontWeight: FontWeight.w600),
           ),
           children: <Widget>[
+            // Busca os ids dos produtos em cada categoria
+
             FutureBuilder<QuerySnapshot>(
               future: category.reference.collection("items").getDocuments(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) return Container();
+
+                // Lista dos items expandidos
+
                 return Column(
-                  children: snapshot.data.documents.map((doc) {
-                    return ListTile(
-                      leading: CircleAvatar(
-                        backgroundImage: NetworkImage(doc.data["images"][0]),
-                      ),
-                      title: Text(doc.data["title"]),
-                      trailing:
-                          Text("R\$${doc.data["price"].toStringAsFixed(2)}"),
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => ProductScreen(
-                                  categoryId: category.documentID,
-                                  product: doc,
-                                )));
-                      },
+                    children: snapshot.data.documents.map((doc) {
+                  //atraves do ids já buscados, agora realiza a busca do produto real
+
+                  return FutureBuilder<DocumentSnapshot>(
+                      future: Firestore.instance
+                          .collection('products')
+                          .document(doc.documentID)
+                          .get(),
+                      builder: (context, product) {
+                        if (!product.hasData) return Container();
+                        return ListTile(
+                          leading: CircleAvatar(
+                            backgroundImage:
+                                NetworkImage(product.data["imgUrl"]),
+                          ),
+                          title: Text(product.data["title"]),
+                          trailing: Text(
+                              "R\$${product.data["price"].toStringAsFixed(2)}"),
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => ProductScreen(
+                                      categoryId: category.documentID,
+                                      product: product.data,
+                                    )));
+                          },
+                        );
+                      });
+                }).toList()
+                    /* ..add(FutureBuilder<DocumentSnapshot>(
+                        future: null,
+                        builder: (context, snapshot) {
+                          return ListTile(
+                            leading: CircleAvatar(
+                              backgroundColor: Colors.transparent,
+                              child: Icon(
+                                Icons.add,
+                                color: Colors.pinkAccent,
+                              ),
+                            ),
+                            title: Text("Adicionar"),
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => ProductScreen(
+                                        categoryId: category.documentID,
+                                      )));
+                            },
+                          );
+                        })), */
                     );
-                  }).toList()
-                    ..add(ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: Colors.transparent,
-                        child: Icon(
-                          Icons.add,
-                          color: Colors.pinkAccent,
-                        ),
-                      ),
-                      title: Text("Adicionar"),
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => ProductScreen(
-                                  categoryId: category.documentID,
-                                )));
-                      },
-                    )),
-                );
+              },
+            ),
+            ListTile(
+              leading: CircleAvatar(
+                backgroundColor: Colors.transparent.withAlpha(10),
+                child: Icon(
+                  Icons.add,
+                ),
+              ),
+              title: Text("Adicionar"),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => ProductScreen(
+                          categoryId: category.documentID,
+                        )));
               },
             )
           ],

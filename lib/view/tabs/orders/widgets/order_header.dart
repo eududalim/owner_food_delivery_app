@@ -32,6 +32,10 @@ class OrderHeader extends StatelessWidget {
               "Produtos: R\$${order.data["productsPrice"].toStringAsFixed(2)}",
               style: TextStyle(fontWeight: FontWeight.w500),
             ),
+            /*    Text(
+              "Frete: R\$${order.data["priceShip"].toStringAsFixed(2)}",
+              style: TextStyle(fontWeight: FontWeight.w500),
+            ), */
             Text(
               "Total: R\$${order.data["totalPrice"].toStringAsFixed(2)}",
               style: TextStyle(fontWeight: FontWeight.w500),

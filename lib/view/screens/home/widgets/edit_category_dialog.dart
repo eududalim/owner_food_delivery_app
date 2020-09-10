@@ -23,7 +23,7 @@ class _EditCategoryDialogState extends State<EditCategoryDialog> {
   _EditCategoryDialogState({DocumentSnapshot category})
       : _categoryBloc = CategoryBloc(category),
         _controller = TextEditingController(
-            text: category != null ? category.data["title"] : "");
+            text: category != null ? category.documentID : "");
 
   @override
   Widget build(BuildContext context) {

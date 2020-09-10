@@ -8,7 +8,11 @@ import 'package:rxdart/rxdart.dart';
 enum SignUpState { LOADING, SUCCESS, FAIL, IDLE }
 
 class SignUpBloc extends BlocBase with SignUpValidator, LoginValidators {
-  final _adminRepo = UserAdminRepo();
+  UserAdminRepo _adminRepo;
+
+  SignUpBloc() {
+    _adminRepo = UserAdminRepo();
+  }
 
   final _emailController = BehaviorSubject<String>();
   final _passwordController = BehaviorSubject<String>();
