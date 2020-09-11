@@ -1,12 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:gerente_loja/models/user_admin_model.dart';
 import 'package:gerente_loja/view/screens/product/product_screen.dart';
 import 'package:gerente_loja/view/screens/home/widgets/edit_category_dialog.dart';
 
 class CategoryTile extends StatelessWidget {
   final DocumentSnapshot category;
+  final UserAdminModel _user;
 
-  CategoryTile(this.category);
+  CategoryTile(this.category, this._user);
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +16,7 @@ class CategoryTile extends StatelessWidget {
       margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: Card(
         child: ExpansionTile(
-          leading: GestureDetector(
+          /* leading: GestureDetector(
             onTap: () {
               showDialog(
                   context: context,
@@ -23,11 +25,10 @@ class CategoryTile extends StatelessWidget {
                       ));
             },
             child: CircleAvatar(
-              // backgroundImage: NetworkImage(category.data["icon"]),
-              backgroundColor: Colors.pinkAccent,
+              backgroundColor: Colors.transparent,
             ),
           ),
-
+              */
           //Titulo da categoria
 
           title: Text(
@@ -47,61 +48,62 @@ class CategoryTile extends StatelessWidget {
 
                 return Column(
                     children: snapshot.data.documents.map((doc) {
-                  //atraves do ids já buscados, agora realiza a busca do produto real
-
                   return FutureBuilder<DocumentSnapshot>(
-                      future: Firestore.instance
-                          .collection('products')
-                          .document(doc.documentID)
-                          .get(),
-                      builder: (context, product) {
-                        if (!product.hasData) return Container();
-                        return ListTile(
-                          leading: CircleAvatar(
-                            backgroundImage:
-                                NetworkImage(product.data["imgUrl"]),
-                          ),
-                          title: Text(product.data["title"]),
-                          trailing: Text(
-                              "R\$${product.data["price"].toStringAsFixed(2)}"),
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => ProductScreen(
-                                      categoryId: category.documentID,
-                                      product: product.data,
-                                    )));
-                          },
-                        );
-                      });
-                }).toList()
-                    /* ..add(FutureBuilder<DocumentSnapshot>(
-                        future: null,
-                        builder: (context, snapshot) {
-                          return ListTile(
-                            leading: CircleAvatar(
-                              backgroundColor: Colors.transparent,
-                              child: Icon(
-                                Icons.add,
-                                color: Colors.pinkAccent,
-                              ),
-                            ),
-                            title: Text("Adicionar"),
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => ProductScreen(
-                                        categoryId: category.documentID,
-                                      )));
-                            },
-                          );
-                        })), */
-                    );
+                    initialData: null,
+                    //verifica se o item pertence ao usuario admin logado
+                    future: Firestore.instance
+                        .collection('admins')
+                        .document(_user.uid)
+                        .collection('products')
+                        .document(doc.documentID)
+                        .get(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return Container();
+                      }
+
+                      if (snapshot.data.exists) {
+                        return FutureBuilder<DocumentSnapshot>(
+                            future: Firestore.instance
+                                .collection('products')
+                                .document(doc.documentID)
+                                .get(),
+                            builder: (context, product) {
+                              if (!product.hasData) return Container();
+
+                              return ListTile(
+                                  leading: CircleAvatar(
+                                    backgroundImage:
+                                        NetworkImage(product.data["imgUrl"]),
+                                  ),
+                                  title: Text(product.data["title"]),
+                                  trailing: Text(
+                                      "R\$${product.data["price"].toStringAsFixed(2)}"),
+                                  onTap: () {
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                            builder: (context) => ProductScreen(
+                                                  categoryId:
+                                                      category.documentID,
+                                                  product: product.data,
+                                                )));
+                                  });
+                            });
+                      }
+
+                      return Container();
+                    },
+                  );
+                  //atraves do ids já buscados, agora realiza a busca do produto real
+                }).toList());
               },
             ),
             ListTile(
               leading: CircleAvatar(
-                backgroundColor: Colors.transparent.withAlpha(10),
+                backgroundColor: Theme.of(context).primaryColor,
                 child: Icon(
                   Icons.add,
+                  color: Colors.white,
                 ),
               ),
               title: Text("Adicionar"),
@@ -109,6 +111,7 @@ class CategoryTile extends StatelessWidget {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => ProductScreen(
                           categoryId: category.documentID,
+                          adminId: _user.uid,
                         )));
               },
             )

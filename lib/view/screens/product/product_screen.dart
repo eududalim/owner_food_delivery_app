@@ -8,20 +8,24 @@ import 'package:gerente_loja/view/screens/product/widgets/product_sizes.dart';
 class ProductScreen extends StatefulWidget {
   final String categoryId;
   final DocumentSnapshot product;
+  final String adminId;
 
-  ProductScreen({this.categoryId, this.product});
+  ProductScreen({this.categoryId, this.product, this.adminId});
 
   @override
-  _ProductScreenState createState() => _ProductScreenState(categoryId, product);
+  _ProductScreenState createState() =>
+      _ProductScreenState(categoryId, product, adminId);
 }
 
 class _ProductScreenState extends State<ProductScreen> with ProductValidator {
+  final String _adminId;
   final ProductBloc _productBloc;
 
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  _ProductScreenState(String categoryId, DocumentSnapshot product)
+  _ProductScreenState(
+      String categoryId, DocumentSnapshot product, this._adminId)
       : _productBloc = ProductBloc(categoryId: categoryId, product: product);
 
   @override
@@ -174,7 +178,7 @@ class _ProductScreenState extends State<ProductScreen> with ProductValidator {
         backgroundColor: Colors.pinkAccent,
       ));
 
-      bool success = await _productBloc.saveProduct();
+      bool success = await _productBloc.saveProduct(_adminId);
 
       _scaffoldKey.currentState.removeCurrentSnackBar();
 

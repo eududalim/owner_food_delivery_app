@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -35,15 +36,16 @@ class LoginBloc extends BlocBase with LoginValidators {
         FirebaseAuth.instance.onAuthStateChanged.listen((user) async {
       if (user != null) {
         if (await verifyPrivileges(user)) {
-          Firestore.instance
+          await Firestore.instance
               .collection('admins')
               .document(user.uid)
               .get()
-              .then((value) {
-            userModel.name = value.data['name'];
-            userModel.cpf = value.data['cpf'];
-            userModel.nameStore = value.data['store'];
-            userModel.email = value.data['email'];
+              .then((doc) {
+            userModel.name = doc.data['name'];
+            userModel.cpf = doc.data['cpf'];
+            userModel.nameStore = doc.data['store'];
+            userModel.email = doc.data['email'];
+            userModel.uid = user.uid;
           });
           _stateController.add(LoginState.SUCCESS);
         } else {
@@ -56,28 +58,45 @@ class LoginBloc extends BlocBase with LoginValidators {
     });
   }
 
-  void submit() {
+  void submit() async {
     final email = _emailController.value;
     final password = _passwordController.value;
 
     _stateController.add(LoginState.LOADING);
+    log('LoginState.Loading');
 
-    FirebaseAuth.instance
+    await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password)
-        .catchError((e) {
+        .then((value) {
+      _stateController.add(LoginState.SUCCESS);
+      log('LoginState.SUCCESS');
+    }).catchError((e) {
       _stateController.add(LoginState.FAIL);
+      log('LoginState.FAIL');
     });
-
-    _stateController.add(LoginState.SUCCESS);
   }
 
   void signOut() {
     FirebaseAuth.instance.signOut();
     _stateController.add(LoginState.IDLE);
+    log('SignOut finish. LoginState.IDLE');
   }
 
   Future<bool> verifyPrivileges(FirebaseUser user) async {
     return await Firestore.instance
+        .collection('admins')
+        .document(user.uid)
+        .get()
+        .then((doc) {
+      if (doc.data['name'] != null) {
+        log('doc.data[name] existe. usuario com privilegio');
+        return true;
+      } else
+        log('usuario sem privilégio');
+      return false;
+    }).catchError((e) => false);
+
+    /* return await Firestore.instance
         .collection("admins")
         .document(user.uid)
         .get()
@@ -89,7 +108,7 @@ class LoginBloc extends BlocBase with LoginValidators {
       }
     }).catchError((e) {
       return false;
-    });
+    }); */
   }
 
   @override

@@ -70,8 +70,8 @@ class _HomeScreenState extends State<HomeScreen> {
               children: <Widget>[
                 UsersTab(),
                 OrdersTab(),
-                ProductsTab(),
-                MyAccountTab(_loginBloc.userModel)
+                ProductsTab(_loginBloc.userModel),
+                MyAccountTab(_loginBloc)
               ],
             ),
           ),

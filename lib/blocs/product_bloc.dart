@@ -4,7 +4,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ProductBloc extends BlocBase {
-
   final _dataController = BehaviorSubject<Map>();
   final _loadingController = BehaviorSubject<bool>();
   final _createdController = BehaviorSubject<bool>();
@@ -18,8 +17,8 @@ class ProductBloc extends BlocBase {
 
   Map<String, dynamic> unsavedData;
 
-  ProductBloc({this.categoryId, this.product}){
-    if(product != null){
+  ProductBloc({this.categoryId, this.product}) {
+    if (product != null) {
       unsavedData = Map.of(product.data);
       unsavedData["images"] = List.of(product.data["images"]);
       unsavedData["sizes"] = List.of(product.data["sizes"]);
@@ -27,7 +26,11 @@ class ProductBloc extends BlocBase {
       _createdController.add(true);
     } else {
       unsavedData = {
-        "title": null, "description": null, "price": null, "images": [], "sizes": []
+        "title": null,
+        "description": null,
+        "price": null,
+        "images": [],
+        "sizes": []
       };
 
       _createdController.add(false);
@@ -36,36 +39,53 @@ class ProductBloc extends BlocBase {
     _dataController.add(unsavedData);
   }
 
-  void saveTitle(String title){
+  void saveTitle(String title) {
     unsavedData["title"] = title;
   }
 
-  void saveDescription(String description){
+  void saveDescription(String description) {
     unsavedData["description"] = description;
   }
 
-  void savePrice(String price){
+  void savePrice(String price) {
     unsavedData["price"] = double.parse(price);
   }
 
-  void saveImages(List images){
+  void saveImages(List images) {
     unsavedData["images"] = images;
   }
 
-  void saveSizes(List sizes){
+  void saveSizes(List sizes) {
     unsavedData["sizes"] = sizes;
   }
 
-  Future<bool> saveProduct() async {
+  Future<bool> saveProduct(String adminId) async {
+    String adminId;
     _loadingController.add(true);
 
     try {
-      if(product != null){
+      if (product != null) {
         await _uploadImages(product.documentID);
         await product.reference.updateData(unsavedData);
       } else {
-        DocumentReference dr = await Firestore.instance.collection("products").document(categoryId).
-          collection("items").add(Map.from(unsavedData)..remove("images"));
+        //add to list prymary
+        DocumentReference dr = await Firestore.instance
+            .collection("products")
+            .add(Map.from(unsavedData)..remove("images"));
+        //add reference to list of categorys
+        await Firestore.instance
+            .collection('category')
+            .document(categoryId)
+            .collection('items')
+            .document(dr.documentID)
+            .setData({'productId': dr.documentID});
+        //add reference to list of admin products
+        await Firestore.instance
+            .collection('admins')
+            .document(adminId)
+            .collection('products')
+            .document(dr.documentID)
+            .setData({'productId': dr.documentID});
         await _uploadImages(dr.documentID);
         await dr.updateData(unsavedData);
       }
@@ -73,19 +93,22 @@ class ProductBloc extends BlocBase {
       _createdController.add(true);
       _loadingController.add(false);
       return true;
-    } catch (e){
+    } catch (e) {
       _loadingController.add(false);
       return false;
     }
   }
-  
+
   Future _uploadImages(String productId) async {
-    for(int i = 0; i < unsavedData["images"].length; i++){
-      if(unsavedData["images"][i] is String) continue;
-      
-      StorageUploadTask uploadTask = FirebaseStorage.instance.ref().child(categoryId).
-        child(productId).child(DateTime.now().millisecondsSinceEpoch.toString()).
-        putFile(unsavedData["images"][i]);
+    for (int i = 0; i < unsavedData["images"].length; i++) {
+      if (unsavedData["images"][i] is String) continue;
+
+      StorageUploadTask uploadTask = FirebaseStorage.instance
+          .ref()
+          .child(categoryId)
+          .child(productId)
+          .child(DateTime.now().millisecondsSinceEpoch.toString())
+          .putFile(unsavedData["images"][i]);
 
       StorageTaskSnapshot s = await uploadTask.onComplete;
       String downloadUrl = await s.ref.getDownloadURL();
@@ -94,7 +117,7 @@ class ProductBloc extends BlocBase {
     }
   }
 
-  void deleteProduct(){
+  void deleteProduct() {
     product.reference.delete();
   }
 
@@ -104,5 +127,4 @@ class ProductBloc extends BlocBase {
     _loadingController.close();
     _createdController.close();
   }
-
 }

@@ -26,6 +26,15 @@ class _LoginScreenState extends State<LoginScreen> {
       if (state == LoginState.SUCCESS)
         Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => HomeScreen()));
+      else if (state == LoginState.FAIL)
+        _scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: Text(
+            'Usuario não encontrado!',
+            textAlign: TextAlign.center,
+            textScaleFactor: 1.1,
+          ),
+          backgroundColor: Colors.redAccent,
+        ));
     });
   }
 
@@ -67,22 +76,15 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: Colors.grey[50],
       body: StreamBuilder<LoginState>(
           stream: _loginBloc.outState,
+          initialData: LoginState.LOADING,
           builder: (context, state) {
             switch (state.data) {
+              case LoginState.SUCCESS:
               case LoginState.LOADING:
                 return Center(child: CircularProgressIndicator());
                 break;
               case LoginState.FAIL:
               case LoginState.IDLE:
-                if (state.data == LoginState.FAIL) {
-                  showCupertinoDialog(
-                      context: context,
-                      barrierDismissible: true,
-                      builder: (context) => CupertinoAlertDialog(
-                            title: Text('Erro'),
-                            content: Text('Usuário não encontrado!'),
-                          ));
-                }
                 return Form(
                   key: _formKey,
                   child: Center(
@@ -158,7 +160,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 );
               default:
             } // switch
-            return Container();
+            return Container(
+              color: Colors.red,
+            );
           }),
     );
   }

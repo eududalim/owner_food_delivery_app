@@ -5,25 +5,15 @@ import 'package:gerente_loja/blocs/login_bloc.dart';
 import 'package:gerente_loja/models/user_admin_model.dart';
 import 'package:gerente_loja/view/tabs/my_account/widgets/tile_account.dart';
 
-class MyAccountTab extends StatefulWidget {
-  final UserAdminModel user;
+class MyAccountTab extends StatelessWidget {
+  //final UserAdminModel _user;
+  final LoginBloc _loginBloc;
 
-  MyAccountTab(
-    this.user,
-  );
-
-  @override
-  _MyAccountTabState createState() => _MyAccountTabState(user);
-}
-
-class _MyAccountTabState extends State<MyAccountTab> {
-  final UserAdminModel _user;
-  final LoginBloc _loginBloc = LoginBloc();
-
-  _MyAccountTabState(this._user);
+  MyAccountTab(this._loginBloc);
 
   @override
   Widget build(BuildContext context) {
+    UserAdminModel _user = _loginBloc.userModel;
     return ListView(padding: EdgeInsets.all(18), children: [
       Text(
         'MINHA CONTA',
@@ -33,7 +23,7 @@ class _MyAccountTabState extends State<MyAccountTab> {
             fontWeight: FontWeight.w600),
       ),
       SizedBox(height: 25),
-      /*     TileAccount(
+      TileAccount(
         dataUser: _user.name,
         labelTitle: 'Nome',
       ),
@@ -44,9 +34,9 @@ class _MyAccountTabState extends State<MyAccountTab> {
       TileAccount(
         dataUser: _user.cpf,
         labelTitle: 'CPF',
-      ),*/
+      ),
       TileAccount(
-        dataUser: 'Loja', // _user.nameStore,
+        dataUser: _user.nameStore,
         labelTitle: 'Titulo Comercial',
       ),
       SizedBox(height: 20),
