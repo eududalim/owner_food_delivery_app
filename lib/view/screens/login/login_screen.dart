@@ -56,12 +56,15 @@ class _LoginScreenState extends State<LoginScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Vem Delivery',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400),
+              'VEM DELIVERY',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w900,
+              ),
             ),
             Text(
               'App do Anunciante',
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400),
             )
           ],
         )

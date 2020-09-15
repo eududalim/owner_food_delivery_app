@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gerente_loja/blocs/product_bloc.dart';
+import 'package:gerente_loja/models/user_admin_model.dart';
 import 'package:gerente_loja/validators/product_validator.dart';
 import 'package:gerente_loja/view/screens/product/widgets/images_widget.dart';
 import 'package:gerente_loja/view/screens/product/widgets/product_sizes.dart';
@@ -9,24 +10,27 @@ class ProductScreen extends StatefulWidget {
   final String categoryId;
   final DocumentSnapshot product;
   final String adminId;
+  final UserAdminModel user;
 
-  ProductScreen({this.categoryId, this.product, this.adminId});
+  ProductScreen({this.categoryId, this.product, this.adminId, this.user});
 
   @override
   _ProductScreenState createState() =>
-      _ProductScreenState(categoryId, product, adminId);
+      _ProductScreenState(categoryId, product, adminId, user);
 }
 
 class _ProductScreenState extends State<ProductScreen> with ProductValidator {
   final String _adminId;
   final ProductBloc _productBloc;
+  final UserAdminModel user;
 
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   _ProductScreenState(
-      String categoryId, DocumentSnapshot product, this._adminId)
-      : _productBloc = ProductBloc(categoryId: categoryId, product: product);
+      String categoryId, DocumentSnapshot product, this._adminId, this.user)
+      : _productBloc = ProductBloc(
+            categoryId: categoryId, product: product, userAdminModel: user);
 
   @override
   Widget build(BuildContext context) {

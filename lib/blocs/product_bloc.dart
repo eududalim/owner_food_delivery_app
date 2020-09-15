@@ -1,6 +1,7 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:gerente_loja/models/user_admin_model.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ProductBloc extends BlocBase {
@@ -15,9 +16,11 @@ class ProductBloc extends BlocBase {
   String categoryId;
   DocumentSnapshot product;
 
+  UserAdminModel userAdminModel;
+
   Map<String, dynamic> unsavedData;
 
-  ProductBloc({this.categoryId, this.product}) {
+  ProductBloc({this.categoryId, this.product, this.userAdminModel}) {
     if (product != null) {
       unsavedData = Map.of(product.data);
       unsavedData["images"] = List.of(product.data["images"]);
@@ -30,7 +33,10 @@ class ProductBloc extends BlocBase {
         "description": null,
         "price": null,
         "images": [],
-        "sizes": []
+        "sizes": [],
+        "store": null,
+        'adminId': null,
+        "category": null
       };
 
       _createdController.add(false);
@@ -68,7 +74,10 @@ class ProductBloc extends BlocBase {
         await _uploadImages(product.documentID);
         await product.reference.updateData(unsavedData);
       } else {
-        //add to list prymary
+        unsavedData['adminId'] = adminId;
+        unsavedData['store'] = userAdminModel.nameStore;
+        unsavedData['category'] = categoryId;
+        //add to products list principal
         DocumentReference dr = await Firestore.instance
             .collection("products")
             .add(Map.from(unsavedData)..remove("images"));
@@ -94,6 +103,7 @@ class ProductBloc extends BlocBase {
       _loadingController.add(false);
       return true;
     } catch (e) {
+      print('ERRO: ' + e.toString());
       _loadingController.add(false);
       return false;
     }

@@ -78,8 +78,8 @@ class LoginBloc extends BlocBase with LoginValidators {
 
   void signOut() {
     FirebaseAuth.instance.signOut();
-    _stateController.add(LoginState.IDLE);
-    log('SignOut finish. LoginState.IDLE');
+    _stateController.add(LoginState.FAIL);
+    log('SignOut finish. LoginState.FAIL');
   }
 
   Future<bool> verifyPrivileges(FirebaseUser user) async {

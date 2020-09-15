@@ -15,7 +15,7 @@ class LoginValidators {
     if (password.length > 7) {
       sink.add(password);
     } else {
-      sink.addError("Senha inválida, deve conter pelo menos 8 caracteres");
+      sink.addError("Senha muito curta!");
     }
   });
 }

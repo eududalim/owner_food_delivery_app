@@ -71,7 +71,9 @@ class _EditCategoryDialogState extends State<EditCategoryDialog> {
                       controller: _controller,
                       onChanged: _categoryBloc.setTitle,
                       decoration: InputDecoration(
-                          errorText: snapshot.hasError ? snapshot.error : null),
+                          errorText: snapshot.hasError
+                              ? snapshot.error.toString()
+                              : null),
                     );
                   }),
             ),
@@ -97,14 +99,13 @@ class _EditCategoryDialogState extends State<EditCategoryDialog> {
                     stream: _categoryBloc.submitValid,
                     builder: (context, snapshot) {
                       return FlatButton(
-                        child: Text("Salvar"),
-                        onPressed: snapshot.hasData
-                            ? () async {
-                                await _categoryBloc.saveData();
-                                Navigator.of(context).pop();
-                              }
-                            : null,
-                      );
+                          child: Text("Salvar"),
+                          onPressed: () async {
+                            await _categoryBloc.saveData();
+                            Navigator.of(context).pop();
+                          }
+                          //  : null,
+                          );
                     })
               ],
             )

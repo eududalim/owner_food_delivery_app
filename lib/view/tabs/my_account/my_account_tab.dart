@@ -6,7 +6,6 @@ import 'package:gerente_loja/models/user_admin_model.dart';
 import 'package:gerente_loja/view/tabs/my_account/widgets/tile_account.dart';
 
 class MyAccountTab extends StatelessWidget {
-  //final UserAdminModel _user;
   final LoginBloc _loginBloc;
 
   MyAccountTab(this._loginBloc);

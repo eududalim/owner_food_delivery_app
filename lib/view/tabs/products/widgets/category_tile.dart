@@ -16,22 +16,19 @@ class CategoryTile extends StatelessWidget {
       margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: Card(
         child: ExpansionTile(
-          /* leading: GestureDetector(
-            onTap: () {
-              showDialog(
-                  context: context,
-                  builder: (context) => EditCategoryDialog(
-                        category: category,
-                      ));
-            },
-            child: CircleAvatar(
-              backgroundColor: Colors.transparent,
-            ),
-          ),
-              */
           //Titulo da categoria
 
-          title: Text(
+          title:
+              /*  GestureDetector(
+              onTap: () {
+                showDialog(
+                    context: context,
+                    builder: (context) => EditCategoryDialog(
+                          category: category,
+                        ));
+              },
+              child:  */
+              Text(
             category.documentID,
             style:
                 TextStyle(color: Colors.grey[850], fontWeight: FontWeight.w600),
@@ -86,6 +83,7 @@ class CategoryTile extends StatelessWidget {
                                                   categoryId:
                                                       category.documentID,
                                                   product: product.data,
+                                                  user: _user,
                                                 )));
                                   });
                             });
