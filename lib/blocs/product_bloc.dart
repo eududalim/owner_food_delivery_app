@@ -34,9 +34,9 @@ class ProductBloc extends BlocBase {
         "price": null,
         "images": [],
         "sizes": [],
-        "store": null,
-        'adminId': null,
-        "category": null
+        "store": userAdminModel.nameStore,
+        'adminId': userAdminModel.uid,
+        "category": categoryId
       };
 
       _createdController.add(false);
@@ -65,8 +65,8 @@ class ProductBloc extends BlocBase {
     unsavedData["sizes"] = sizes;
   }
 
-  Future<bool> saveProduct(String adminId) async {
-    String adminId;
+  Future<bool> saveProduct() async {
+    //  String adminId;
     _loadingController.add(true);
 
     try {
@@ -74,7 +74,7 @@ class ProductBloc extends BlocBase {
         await _uploadImages(product.documentID);
         await product.reference.updateData(unsavedData);
       } else {
-        unsavedData['adminId'] = adminId;
+        unsavedData['adminId'] = userAdminModel.uid;
         unsavedData['store'] = userAdminModel.nameStore;
         unsavedData['category'] = categoryId;
         //add to products list principal
@@ -91,7 +91,7 @@ class ProductBloc extends BlocBase {
         //add reference to list of admin products
         await Firestore.instance
             .collection('admins')
-            .document(adminId)
+            .document(userAdminModel.uid)
             .collection('products')
             .document(dr.documentID)
             .setData({'productId': dr.documentID});

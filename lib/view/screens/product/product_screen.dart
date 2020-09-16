@@ -179,10 +179,10 @@ class _ProductScreenState extends State<ProductScreen> with ProductValidator {
           style: TextStyle(color: Colors.white),
         ),
         duration: Duration(minutes: 1),
-        backgroundColor: Colors.pinkAccent,
+        backgroundColor: Theme.of(context).primaryColor,
       ));
 
-      bool success = await _productBloc.saveProduct(_adminId);
+      bool success = await _productBloc.saveProduct();
 
       _scaffoldKey.currentState.removeCurrentSnackBar();
 
@@ -191,7 +191,7 @@ class _ProductScreenState extends State<ProductScreen> with ProductValidator {
           success ? "Produto salvo!" : "Erro ao salvar produto!",
           style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: Colors.pinkAccent,
+        backgroundColor: success ? Theme.of(context).primaryColor : Colors.red,
       ));
     }
   }

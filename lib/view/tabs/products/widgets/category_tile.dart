@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gerente_loja/models/user_admin_model.dart';
 import 'package:gerente_loja/view/screens/product/product_screen.dart';
 import 'package:gerente_loja/view/screens/home/widgets/edit_category_dialog.dart';
+import 'package:shimmer/shimmer.dart';
 
 class CategoryTile extends StatelessWidget {
   final DocumentSnapshot category;
@@ -66,12 +67,26 @@ class CategoryTile extends StatelessWidget {
                                 .document(doc.documentID)
                                 .get(),
                             builder: (context, product) {
-                              if (!product.hasData) return Container();
+                              if (!product.hasData)
+                                return Container(
+                                  width: 200,
+                                  height: 25,
+                                  margin: EdgeInsets.all(16),
+                                  alignment: Alignment.centerLeft,
+                                  child: Shimmer.fromColors(
+                                      child: Container(
+                                        color: Colors.white.withAlpha(50),
+                                        margin:
+                                            EdgeInsets.symmetric(vertical: 4),
+                                      ),
+                                      baseColor: Colors.white,
+                                      highlightColor: Colors.grey),
+                                );
 
                               return ListTile(
                                   leading: CircleAvatar(
                                     backgroundImage:
-                                        NetworkImage(product.data["imgUrl"]),
+                                        NetworkImage(product.data["images"][0]),
                                   ),
                                   title: Text(product.data["title"]),
                                   trailing: Text(
@@ -110,6 +125,7 @@ class CategoryTile extends StatelessWidget {
                     builder: (context) => ProductScreen(
                           categoryId: category.documentID,
                           adminId: _user.uid,
+                          user: _user,
                         )));
               },
             )

@@ -1,3 +1,4 @@
+import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gerente_loja/blocs/login_bloc.dart';
@@ -6,12 +7,10 @@ import 'package:gerente_loja/models/user_admin_model.dart';
 import 'package:gerente_loja/view/tabs/my_account/widgets/tile_account.dart';
 
 class MyAccountTab extends StatelessWidget {
-  final LoginBloc _loginBloc;
-
-  MyAccountTab(this._loginBloc);
-
   @override
   Widget build(BuildContext context) {
+    final _loginBloc = BlocProvider.of<LoginBloc>(context);
+
     UserAdminModel _user = _loginBloc.userModel;
     return ListView(padding: EdgeInsets.all(18), children: [
       Text(

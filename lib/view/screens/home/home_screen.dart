@@ -60,19 +60,22 @@ class _HomeScreenState extends State<HomeScreen> {
           bloc: _userBloc,
           child: BlocProvider<OrdersBloc>(
             bloc: _ordersBloc,
-            child: PageView(
-              controller: _pageController,
-              onPageChanged: (p) {
-                setState(() {
-                  _page = p;
-                });
-              },
-              children: <Widget>[
-                UsersTab(),
-                OrdersTab(),
-                ProductsTab(_loginBloc.userModel),
-                MyAccountTab(_loginBloc)
-              ],
+            child: BlocProvider<LoginBloc>(
+              bloc: _loginBloc,
+              child: PageView(
+                controller: _pageController,
+                onPageChanged: (p) {
+                  setState(() {
+                    _page = p;
+                  });
+                },
+                children: <Widget>[
+                  UsersTab(),
+                  OrdersTab(),
+                  ProductsTab(),
+                  MyAccountTab()
+                ],
+              ),
             ),
           ),
         ),

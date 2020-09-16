@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:gerente_loja/blocs/orders_bloc.dart';
-import 'package:gerente_loja/view/screens/home/widgets/edit_category_dialog.dart';
 
 class CustomFloatingButton extends StatelessWidget {
   const CustomFloatingButton(this._page, this._ordersBloc);
@@ -44,6 +43,8 @@ class CustomFloatingButton extends StatelessWidget {
           ],
         );
       case 2:
+        return Container();
+      /* 
         return FloatingActionButton(
           child: Icon(Icons.add),
           backgroundColor: Colors.pinkAccent,
@@ -51,7 +52,7 @@ class CustomFloatingButton extends StatelessWidget {
             showDialog(
                 context: context, builder: (context) => EditCategoryDialog());
           },
-        );
+        ); */
       default:
         return Container();
     }
