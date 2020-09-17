@@ -1,5 +1,6 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/widgets.dart';
 import 'package:gerente_loja/models/user_admin_model.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -30,26 +31,82 @@ class AccountBloc extends BlocBase {
     unsavedData["phone"] = phone;
   }
 
-//implementar isso
-  void saveAddress(Map address) {
-    unsavedData["address"] = address;
+//////ENDEREÇO///////////////////////////////
+  void saveRua(String text) {
+    unsavedData['address']['rua'] = text;
   }
 
-  Future<bool> saveData(String uid) async {
+  void saveNumRua(String text) {
+    unsavedData['address']['numRua'] = text;
+  }
+
+  void saveCidade(String text) {
+    unsavedData['address']['cidade'] = text;
+  }
+
+  void saveEstado(String text) {
+    unsavedData['address']['estado'] = text;
+  }
+
+  void saveBairro(String text) {
+    unsavedData['address']['bairro'] = text;
+  }
+
+  void saveComplemento(String text) {
+    unsavedData['address']['complemento'] = text;
+  }
+
+  void saveReferencia(String text) {
+    unsavedData['address']['referencia'] = text;
+  }
+
+  ////////VALIDAÇÕES//////////////////
+  String validateTitleStore(String text) {
+    if (text.isEmpty) return "Preencha o título comercial";
+    return null;
+  }
+
+  String validateName(String text) {
+    if (text.isEmpty) return "Preencha o seu nome completo";
+    return null;
+  }
+
+  String validatePhone(String text) {
+    if (text.isEmpty) return "Preencha o seu numero de celular";
+    return null;
+  }
+
+  String validateEmail(String text) {
+    if (text.isEmpty || !text.contains('@')) return "Preencha o seu email";
+    return null;
+  }
+
+  void enabledEdit() {
+    _enabledController.add(true);
+  }
+
+  Future<bool> saveData(uid) async {
     _enabledController.add(false);
     _loadingController.add(true);
+
+    ///  unsavedData[''] = unsavedData['address']
+
+    bool sucess;
 
     await Firestore.instance
         .collection('admins')
         .document(uid)
-        .updateData(unsavedData)
-        .catchError((e) {
-      _loadingController.add(false);
-      return false;
+        .setData(unsavedData)
+        .whenComplete(() {
+      // _loadingController.add(false);
+      sucess = true;
+    }).catchError((e) {
+      //  _loadingController.add(false);
+      sucess = false;
     });
 
     _loadingController.add(false);
-    return true;
+    return sucess;
   }
 
   AccountBloc(UserAdminModel user) {
@@ -58,7 +115,8 @@ class AccountBloc extends BlocBase {
       'titleStore': user.titleStore,
       'phone': user.phone,
       'email': user.email,
-      'uid': user.uid
+      'uid': user.uid,
+      'address': user.address
     };
     _dataController.add(unsavedData);
   }

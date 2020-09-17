@@ -4,9 +4,23 @@ class UserAdminModel {
   String name;
   String email;
   String uid;
+  Map address = {
+    'cidade': '',
+    'bairro': '',
+    'estado': '',
+    'complemento': '',
+    'referencia': '',
+    'rua': '',
+    'numRua': '',
+  };
 
   UserAdminModel(
-      {this.phone, this.titleStore, this.email, this.name, this.uid});
+      {this.phone,
+      this.titleStore,
+      this.email,
+      this.name,
+      this.uid,
+      this.address});
 
   Map<String, dynamic> toMap(String uid) {
     return {
@@ -15,6 +29,7 @@ class UserAdminModel {
       'titleStore': titleStore,
       'name': name,
       'email': email,
+      'address': address
     };
   }
 }

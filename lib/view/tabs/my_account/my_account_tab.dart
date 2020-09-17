@@ -20,75 +20,177 @@ class _MyAccountTabState extends State<MyAccountTab> {
   Widget build(BuildContext context) {
     final _loginBloc = BlocProvider.of<LoginBloc>(context);
     final _fieldStyle = TextStyle(color: Colors.white, fontSize: 16);
+    final _formKey = GlobalKey<FormState>();
 
     UserAdminModel _user = _loginBloc.userModel;
-    AccountBloc accountBloc = AccountBloc(_user);
+    AccountBloc _accountBloc = AccountBloc(_user);
+
+    void saveData() async {
+      if (_formKey.currentState.validate()) {
+        _formKey.currentState.save();
+
+        bool success = await _accountBloc.saveData(_user.uid);
+
+        Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text(success
+              ? 'Dados salvos com sucesso!'
+              : 'Erro ao atualizar dados'),
+          backgroundColor: success
+              ? Theme.of(context).primaryColor.withOpacity(0.7)
+              : Colors.redAccent,
+        ));
+      }
+    }
 
     return StreamBuilder<Map>(
-        initialData: _user.toMap(_user.uid),
-        stream: accountBloc.outData,
+        // initialData: _user.toMap(_user.uid),
+        stream: _accountBloc.outData,
         builder: (context, snapshot) {
           if (snapshot.hasData)
             return StreamBuilder<bool>(
                 initialData: false,
-                stream: accountBloc.outEnabled,
+                stream: _accountBloc.outEnabled,
                 builder: (context, enabled) {
-                  return ListView(padding: EdgeInsets.all(18), children: [
-                    Text(
-                      'MINHA CONTA',
-                      style: TextStyle(
-                          fontSize: 25,
-                          color: Theme.of(context).primaryColor,
-                          fontWeight: FontWeight.w600),
-                    ),
-                    SizedBox(height: 25),
-                    TextFormField(
-                      enabled: enabled.data,
-                      initialValue: snapshot.data['name'],
-                      style: _fieldStyle,
-                      decoration: _buildDecoration("Nome"),
-                    ),
-                    TextFormField(
-                      enabled: false,
-                      initialValue: snapshot.data['email'],
-                      style: _fieldStyle,
-                      decoration: _buildDecoration("Email"),
-                    ),
-                    TextFormField(
-                      enabled: enabled.data,
-                      initialValue: snapshot.data['phone'],
-                      style: _fieldStyle,
-                      decoration: _buildDecoration("Telefone"),
-                    ),
-                    TextFormField(
-                      enabled: enabled.data,
-                      initialValue: snapshot.data['titleStore'],
-                      style: _fieldStyle,
-                      decoration: _buildDecoration("Titulo comercial"),
-                    ),
-                    SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        FlatButton(
-                            onPressed: _loginBloc.signOut,
-                            padding: EdgeInsets.zero,
-                            textColor: Colors.red,
-                            child: Text(
-                              'Sair',
-                              style: TextStyle(fontWeight: FontWeight.w500),
-                            )),
-                        FlatButton.icon(
-                          padding: EdgeInsets.zero,
-                          textColor: Colors.teal,
-                          onPressed: () {},
-                          icon: Icon(CupertinoIcons.pencil),
-                          label: Text('Editar'),
-                        )
-                      ],
-                    ),
-                  ]);
+                  return Form(
+                    key: _formKey,
+                    child: ListView(padding: EdgeInsets.all(18), children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'MINHA CONTA',
+                            style: TextStyle(
+                                fontSize: 25,
+                                color: Theme.of(context).primaryColor,
+                                fontWeight: FontWeight.w600),
+                          ),
+                          FlatButton(
+                              onPressed: _loginBloc.signOut,
+                              padding: EdgeInsets.zero,
+                              textColor: Colors.red,
+                              child: Text(
+                                'Sair',
+                                style: TextStyle(fontWeight: FontWeight.w500),
+                              )),
+                        ],
+                      ),
+                      SizedBox(height: 25),
+                      TextFormField(
+                        enabled: enabled.data,
+                        initialValue: snapshot.data['name'],
+                        style: _fieldStyle,
+                        decoration: _buildDecoration("Nome"),
+                        onSaved: _accountBloc.saveName,
+                        validator: _accountBloc.validateName,
+                      ),
+                      TextFormField(
+                        enabled: false,
+                        initialValue: snapshot.data['email'],
+                        style: _fieldStyle,
+                        decoration: _buildDecoration("Email"),
+                        onSaved: _accountBloc.saveEmail,
+                        validator: _accountBloc.validateEmail,
+                        keyboardType: TextInputType.emailAddress,
+                      ),
+                      TextFormField(
+                        enabled: enabled.data,
+                        initialValue: snapshot.data['phone'],
+                        style: _fieldStyle,
+                        decoration: _buildDecoration("Telefone"),
+                        onSaved: _accountBloc.savePhone,
+                        validator: _accountBloc.validatePhone,
+                        keyboardType: TextInputType.phone,
+                      ),
+                      TextFormField(
+                        enabled: enabled.data,
+                        initialValue: snapshot.data['titleStore'],
+                        style: _fieldStyle,
+                        decoration: _buildDecoration("Titulo comercial"),
+                        onSaved: _accountBloc.saveTitleStore,
+                        validator: _accountBloc.validateTitleStore,
+                      ),
+
+                      //ENDEREÇO///////////////////////////////////////////////
+                      TextFormField(
+                        enabled: enabled.data,
+                        initialValue: snapshot.data['address']['rua'],
+                        style: _fieldStyle,
+                        decoration: _buildDecoration("Rua"),
+                        onSaved: _accountBloc.saveRua,
+                        validator: _accountBloc.validateTitleStore,
+                      ),
+                      TextFormField(
+                        enabled: enabled.data,
+                        initialValue: snapshot.data['address']['bairro'],
+                        style: _fieldStyle,
+                        decoration: _buildDecoration("Bairro"),
+                        onSaved: _accountBloc.saveBairro,
+                        validator: _accountBloc.validateTitleStore,
+                      ),
+                      TextFormField(
+                        enabled: enabled.data,
+                        initialValue: snapshot.data['address']['cidade'],
+                        style: _fieldStyle,
+                        decoration: _buildDecoration("Cidade"),
+                        onSaved: _accountBloc.saveCidade,
+                        validator: _accountBloc.validateTitleStore,
+                      ),
+                      TextFormField(
+                        enabled: enabled.data,
+                        initialValue: snapshot.data['address']['estado'],
+                        style: _fieldStyle,
+                        decoration: _buildDecoration("Estado"),
+                        onSaved: _accountBloc.saveEstado,
+                        validator: _accountBloc.validateTitleStore,
+                      ),
+                      TextFormField(
+                        enabled: enabled.data,
+                        initialValue: snapshot.data['address']['complemento'],
+                        style: _fieldStyle,
+                        decoration: _buildDecoration("Complemento"),
+                        onSaved: _accountBloc.saveComplemento,
+                        validator: _accountBloc.validateTitleStore,
+                      ),
+                      TextFormField(
+                        enabled: enabled.data,
+                        initialValue: snapshot.data['address']['referencia'],
+                        style: _fieldStyle,
+                        decoration: _buildDecoration("Referência"),
+                        onSaved: _accountBloc.saveReferencia,
+                        validator: _accountBloc.validateTitleStore,
+                      ),
+                      SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          StreamBuilder<bool>(
+                              initialData: false,
+                              stream: _accountBloc.outLoading,
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) if (snapshot.data)
+                                  return Container(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                return FlatButton.icon(
+                                  padding: EdgeInsets.zero,
+                                  textColor: Colors.teal,
+                                  onPressed: !enabled.data
+                                      ? _accountBloc.enabledEdit
+                                      : saveData,
+                                  icon: enabled.data
+                                      ? Icon(CupertinoIcons
+                                          .check_mark_circled_solid)
+                                      : Icon(CupertinoIcons.pencil),
+                                  label: Text(
+                                      enabled.data ? 'Concluir' : 'Editar'),
+                                );
+                              })
+                        ],
+                      ),
+                    ]),
+                  );
                 });
+          return Container();
         });
   }
 }

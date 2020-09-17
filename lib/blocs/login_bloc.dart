@@ -44,10 +44,11 @@ class LoginBloc extends BlocBase with LoginValidators {
               .get()
               .then((doc) {
             userModel.name = doc.data['name'];
-            userModel.phone = doc.data['cpf'];
-            userModel.titleStore = doc.data['store'];
+            userModel.phone = doc.data['phone'];
+            userModel.titleStore = doc.data['titleStore'];
             userModel.email = doc.data['email'];
             userModel.uid = user.uid;
+            userModel.address = doc.data['address'];
           });
           _stateController.add(LoginState.SUCCESS);
         } else {
