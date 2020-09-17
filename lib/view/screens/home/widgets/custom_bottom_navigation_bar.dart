@@ -22,8 +22,8 @@ class CustomBottomNavigationBar extends StatelessWidget {
                 duration: Duration(milliseconds: 500), curve: Curves.ease);
           },
           items: [
-            BottomNavigationBarItem(
-                icon: Icon(Icons.people_outline), title: Text("Clientes")),
+            //       BottomNavigationBarItem(
+            //           icon: Icon(Icons.people_outline), title: Text("Clientes")),
             BottomNavigationBarItem(
                 icon: Icon(Icons.shopping_cart), title: Text("Pedidos")),
             BottomNavigationBarItem(

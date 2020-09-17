@@ -124,7 +124,6 @@ class CategoryTile extends StatelessWidget {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => ProductScreen(
                           categoryId: category.documentID,
-                          adminId: _user.uid,
                           user: _user,
                         )));
               },

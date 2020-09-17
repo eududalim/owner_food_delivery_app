@@ -34,7 +34,7 @@ class ProductBloc extends BlocBase {
         "price": null,
         "images": [],
         "sizes": [],
-        "store": userAdminModel.nameStore,
+        "store": userAdminModel.titleStore,
         'adminId': userAdminModel.uid,
         "category": categoryId
       };
@@ -75,7 +75,7 @@ class ProductBloc extends BlocBase {
         await product.reference.updateData(unsavedData);
       } else {
         unsavedData['adminId'] = userAdminModel.uid;
-        unsavedData['store'] = userAdminModel.nameStore;
+        unsavedData['store'] = userAdminModel.titleStore;
         unsavedData['category'] = categoryId;
         //add to products list principal
         DocumentReference dr = await Firestore.instance

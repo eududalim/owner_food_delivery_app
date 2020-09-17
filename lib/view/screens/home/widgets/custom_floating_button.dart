@@ -11,7 +11,7 @@ class CustomFloatingButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     switch (_page) {
-      case 1:
+      case 0:
         return SpeedDial(
           child: Icon(Icons.sort),
           backgroundColor: Colors.pinkAccent,

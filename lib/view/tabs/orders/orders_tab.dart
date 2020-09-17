@@ -1,5 +1,6 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
+import 'package:gerente_loja/blocs/login_bloc.dart';
 import 'package:gerente_loja/blocs/orders_bloc.dart';
 import 'package:gerente_loja/view/tabs/orders/widgets/order_tile.dart';
 

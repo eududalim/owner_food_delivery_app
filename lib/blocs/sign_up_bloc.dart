@@ -1,4 +1,5 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gerente_loja/models/user_admin_model.dart';
 import 'package:gerente_loja/repositories/user_admin_repo.dart';
 import 'package:gerente_loja/validators/login_validators.dart';
@@ -53,11 +54,11 @@ class SignUpBloc extends BlocBase with SignUpValidator, LoginValidators {
   void signUp() async {
     UserAdminModel user = UserAdminModel(
       email: _emailController.value,
-      password: _passwordController.value,
       name: _nameController.value,
-      cpf: _cpfController.value,
-      nameStore: _nameStoreController.value,
+      phone: _cpfController.value,
+      titleStore: _nameStoreController.value,
     );
+    String password = _passwordController.value;
 
     if (user.email == null || user.email.isEmpty) {
       _stateController.add(SignUpState.FAIL);
@@ -65,11 +66,10 @@ class SignUpBloc extends BlocBase with SignUpValidator, LoginValidators {
     } else {
       _stateController.add(SignUpState.LOADING);
 
-      bool success = await _adminRepo.createUser(user);
-
-      success
-          ? _stateController.add(SignUpState.SUCCESS)
-          : _stateController.add(SignUpState.FAIL);
+      await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: user.email, password: password)
+          .whenComplete(() => _stateController.add(SignUpState.SUCCESS))
+          .catchError((e) => _stateController.add(SignUpState.FAIL));
     }
   }
 }

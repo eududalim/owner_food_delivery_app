@@ -11,8 +11,9 @@ class OrderTile extends StatelessWidget {
   final states = [
     "",
     "Em preparação",
-    "Em transporte",
-    "Aguardando Entrega",
+    "Saiu para entrega", //
+    // "Em transporte",
+    // "Aguardando Entrega",
     "Entregue"
   ];
 
@@ -23,12 +24,12 @@ class OrderTile extends StatelessWidget {
       child: Card(
         child: ExpansionTile(
           key: Key(order.documentID),
-          initiallyExpanded: order.data["status"] != 4,
+          initiallyExpanded: order.data["status"] != 3,
           title: Text(
             "#${order.documentID.substring(order.documentID.length - 7, order.documentID.length)} - "
             "${states[order.data["status"]]}",
             style: TextStyle(
-                color: order.data["status"] != 4
+                color: order.data["status"] != 3
                     ? Colors.grey[850]
                     : Colors.green),
           ),
@@ -80,7 +81,7 @@ class OrderTile extends StatelessWidget {
                         child: Text("Regredir"),
                       ),
                       FlatButton(
-                        onPressed: order.data["status"] < 4
+                        onPressed: order.data["status"] < 3
                             ? () {
                                 order.reference.updateData(
                                     {"status": order.data["status"] + 1});

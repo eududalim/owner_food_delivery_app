@@ -20,8 +20,8 @@ class UserAdminRepo {
         .setData(user.toMap(uid));
   }
 
-  Future<bool> createUser(UserAdminModel user) async {
-    String uid = await _haveAccount(user.email, user.password);
+  Future<bool> createUser(UserAdminModel user, String password) async {
+    String uid = await _haveAccount(user.email, password);
     if (uid != null) {
       log('USUARIO JÁ CADASTRADO NO FIREBASE. SALVANDO USUARIO COMO ADMIN...');
       _saveData(user, uid);
@@ -30,8 +30,7 @@ class UserAdminRepo {
     } else {
       log('USUARIO NÃO CADASTRADO NO BANCO DE DADOS AINDA. CRIANDO USUARIO...');
       await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
-              email: user.email, password: user.password)
+          .createUserWithEmailAndPassword(email: user.email, password: password)
           .then((value) {
         _firebaseUser = value.user;
         _saveData(user, _firebaseUser.uid);

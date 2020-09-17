@@ -1,27 +1,20 @@
 class UserAdminModel {
-  String cpf;
-  String nameStore;
+  String phone;
+  String titleStore;
   String name;
   String email;
-  String password;
   String uid;
 
   UserAdminModel(
-      {this.cpf,
-      this.nameStore,
-      this.email,
-      this.name,
-      this.password,
-      this.uid});
+      {this.phone, this.titleStore, this.email, this.name, this.uid});
 
   Map<String, dynamic> toMap(String uid) {
     return {
       'uid': uid,
-      'cpf': cpf,
-      'nameStore': nameStore,
+      'phone': phone,
+      'titleStore': titleStore,
       'name': name,
       'email': email,
-      'password': password,
     };
   }
 }

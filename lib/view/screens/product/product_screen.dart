@@ -9,26 +9,23 @@ import 'package:gerente_loja/view/screens/product/widgets/product_sizes.dart';
 class ProductScreen extends StatefulWidget {
   final String categoryId;
   final DocumentSnapshot product;
-  final String adminId;
   final UserAdminModel user;
 
-  ProductScreen({this.categoryId, this.product, this.adminId, this.user});
+  ProductScreen({this.categoryId, this.product, this.user});
 
   @override
   _ProductScreenState createState() =>
-      _ProductScreenState(categoryId, product, adminId, user);
+      _ProductScreenState(categoryId, product, user);
 }
 
 class _ProductScreenState extends State<ProductScreen> with ProductValidator {
-  final String _adminId;
   final ProductBloc _productBloc;
   final UserAdminModel user;
 
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  _ProductScreenState(
-      String categoryId, DocumentSnapshot product, this._adminId, this.user)
+  _ProductScreenState(String categoryId, DocumentSnapshot product, this.user)
       : _productBloc = ProductBloc(
             categoryId: categoryId, product: product, userAdminModel: user);
 
@@ -136,7 +133,7 @@ class _ProductScreenState extends State<ProductScreen> with ProductValidator {
                       SizedBox(
                         height: 16,
                       ),
-                      Text(
+                      /*  Text(
                         "Tamanhos",
                         style: TextStyle(color: Colors.grey, fontSize: 12),
                       ),
@@ -148,7 +145,7 @@ class _ProductScreenState extends State<ProductScreen> with ProductValidator {
                         validator: (s) {
                           if (s.isEmpty) return "";
                         },
-                      )
+                      ) */
                     ],
                   );
                 }),
