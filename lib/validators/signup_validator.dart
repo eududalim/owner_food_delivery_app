@@ -3,7 +3,7 @@ import 'dart:async';
 class SignUpValidator {
   final validateName =
       StreamTransformer<String, String>.fromHandlers(handleData: (name, sink) {
-    if (name.length > 6) {
+    if (name.length > 6 && name.contains(' ')) {
       sink.add(name);
     } else {
       sink.addError("Insira nome completo!");
@@ -19,10 +19,12 @@ class SignUpValidator {
     }
   });
 
-  final validateCpf =
-      StreamTransformer<String, String>.fromHandlers(handleData: (cpf, sink) {
-    if (cpf.length > 6) {
-      sink.add(cpf);
+  ///  '^\([1-9]{2}\) (?:[2-8]|9[1-9])[0-9]{3}\-[0-9]{4}$'
+
+  final validatePhone =
+      StreamTransformer<String, String>.fromHandlers(handleData: (phone, sink) {
+    if (phone.length > 6) {
+      sink.add(phone);
     } else {
       sink.addError("Insira um CPF válido!");
     }

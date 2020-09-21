@@ -26,18 +26,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
     super.initState();
     _signUpBloc.outState.listen((state) {
       if (state == SignUpState.SUCCESS) {
-        Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text(
-            'Conta comercial criada com sucesso!',
-            textAlign: TextAlign.center,
-            textScaleFactor: 1.1,
-          ),
-          backgroundColor: Theme.of(context).primaryColor,
-        ));
         Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => AddressScreen(),
         ));
-      } else if (state == SignUpState.FAIL) {
+      }
+      /* else if (state == SignUpState.FAIL) {
         Scaffold.of(context).showSnackBar(SnackBar(
           content: Text(
             'Verifique os campos e preencha-os corretamente!',
@@ -46,7 +39,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ),
           backgroundColor: Colors.redAccent,
         ));
-      }
+      } */
     });
   }
 
@@ -78,11 +71,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     SizedBox(height: 20),
                     InputField(
                       done: false,
-                      hint: 'Nome Comercial',
+                      hint: 'Titulo Comercial',
                       icon: Icons.store,
                       obscure: false,
-                      onChanged: _signUpBloc.changeNameStore,
-                      stream: _signUpBloc.outNameStore,
+                      onChanged: _signUpBloc.changeTitleStore,
+                      stream: _signUpBloc.outTitleStore,
                     ),
                     SizedBox(height: 20),
                     InputField(
@@ -98,11 +91,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     InputField(
                       done: false,
                       keyboardType: TextInputType.number,
-                      hint: 'CPF',
-                      icon: Icons.perm_contact_calendar,
+                      hint: 'Celular',
+                      icon: Icons.phone,
                       obscure: false,
-                      onChanged: _signUpBloc.changeCpf,
-                      stream: _signUpBloc.outCpf,
+                      onChanged: _signUpBloc.changePhone,
+                      stream: _signUpBloc.outPhone,
                     ),
                     SizedBox(height: 20),
                     InputField(
@@ -117,14 +110,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     SizedBox(
                       height: 50,
                       child: RaisedButton(
-                        onPressed: () {
-                          log('ONPRESSED CHAMADO');
-                          _signUpBloc.signUp();
+                        onPressed: () async {
+                          log('SIGNUP CHAMADO');
+                          String error = await _signUpBloc.signUp();
+                          error.isEmpty
+                              // ignore: unnecessary_statements
+                              ? null
+                              : Scaffold.of(context).showSnackBar(SnackBar(
+                                  content: Text(
+                                    error,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  backgroundColor: Colors.redAccent,
+                                ));
                         },
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(40)),
                         color: Theme.of(context).primaryColor,
                         splashColor: Colors.grey,
+                        textColor: Colors.white,
                         child: Text('Criar conta comercial'),
                       ),
                     )

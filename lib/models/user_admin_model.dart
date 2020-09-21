@@ -22,7 +22,7 @@ class UserAdminModel {
       this.uid,
       this.address});
 
-  Map<String, dynamic> toMap(String uid) {
+  Map<String, dynamic> toMap() {
     return {
       'uid': uid,
       'phone': phone,

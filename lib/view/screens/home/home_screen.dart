@@ -10,7 +10,6 @@ import 'package:gerente_loja/view/screens/login/login_screen.dart';
 import 'package:gerente_loja/view/tabs/my_account/my_account_tab.dart';
 import 'package:gerente_loja/view/tabs/orders/orders_tab.dart';
 import 'package:gerente_loja/view/tabs/products/products_tab.dart';
-import 'package:gerente_loja/view/tabs/users/users_tab.dart';
 
 import 'widgets/custom_bottom_navigation_bar.dart';
 

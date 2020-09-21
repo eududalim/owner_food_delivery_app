@@ -4,7 +4,6 @@ import 'package:gerente_loja/blocs/product_bloc.dart';
 import 'package:gerente_loja/models/user_admin_model.dart';
 import 'package:gerente_loja/validators/product_validator.dart';
 import 'package:gerente_loja/view/screens/product/widgets/images_widget.dart';
-import 'package:gerente_loja/view/screens/product/widgets/product_sizes.dart';
 
 class ProductScreen extends StatefulWidget {
   final String categoryId;

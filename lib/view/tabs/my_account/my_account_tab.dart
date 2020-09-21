@@ -111,6 +111,22 @@ class _MyAccountTabState extends State<MyAccountTab> {
                       ),
 
                       //ENDEREÇO///////////////////////////////////////////////
+                      SizedBox(height: 30),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Divider(
+                            color: Colors.grey,
+                          ),
+                          Text(
+                            'ENDEREÇO',
+                            style: _fieldStyle,
+                          ),
+                          Divider(
+                            color: Colors.grey,
+                          ),
+                        ],
+                      ),
                       TextFormField(
                         enabled: enabled.data,
                         initialValue: snapshot.data['address']['rua'],
@@ -119,29 +135,40 @@ class _MyAccountTabState extends State<MyAccountTab> {
                         onSaved: _accountBloc.saveRua,
                         validator: _accountBloc.validateTitleStore,
                       ),
-                      TextFormField(
-                        enabled: enabled.data,
-                        initialValue: snapshot.data['address']['bairro'],
-                        style: _fieldStyle,
-                        decoration: _buildDecoration("Bairro"),
-                        onSaved: _accountBloc.saveBairro,
-                        validator: _accountBloc.validateTitleStore,
-                      ),
-                      TextFormField(
-                        enabled: enabled.data,
-                        initialValue: snapshot.data['address']['cidade'],
-                        style: _fieldStyle,
-                        decoration: _buildDecoration("Cidade"),
-                        onSaved: _accountBloc.saveCidade,
-                        validator: _accountBloc.validateTitleStore,
-                      ),
-                      TextFormField(
-                        enabled: enabled.data,
-                        initialValue: snapshot.data['address']['estado'],
-                        style: _fieldStyle,
-                        decoration: _buildDecoration("Estado"),
-                        onSaved: _accountBloc.saveEstado,
-                        validator: _accountBloc.validateTitleStore,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Flexible(
+                            child: TextFormField(
+                              enabled: enabled.data,
+                              initialValue: snapshot.data['address']['bairro'],
+                              style: _fieldStyle,
+                              decoration: _buildDecoration("Bairro"),
+                              onSaved: _accountBloc.saveBairro,
+                              validator: _accountBloc.validateTitleStore,
+                            ),
+                          ),
+                          Flexible(
+                            child: TextFormField(
+                              enabled: enabled.data,
+                              initialValue: snapshot.data['address']['cidade'],
+                              style: _fieldStyle,
+                              decoration: _buildDecoration("Cidade"),
+                              onSaved: _accountBloc.saveCidade,
+                              validator: _accountBloc.validateTitleStore,
+                            ),
+                          ),
+                          Flexible(
+                            child: TextFormField(
+                              enabled: enabled.data,
+                              initialValue: snapshot.data['address']['estado'],
+                              style: _fieldStyle,
+                              decoration: _buildDecoration("Estado"),
+                              onSaved: _accountBloc.saveEstado,
+                              validator: _accountBloc.validateTitleStore,
+                            ),
+                          ),
+                        ],
                       ),
                       TextFormField(
                         enabled: enabled.data,

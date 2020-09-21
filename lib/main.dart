@@ -8,7 +8,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Vem Delivery - Anunciante',
-      theme: ThemeData(primaryColor: Colors.teal[400]),
+      theme: ThemeData(
+        primaryColor: Colors.teal[400],
+      ),
       debugShowCheckedModeBanner: false,
       home: SplashScreenPage(),
     );

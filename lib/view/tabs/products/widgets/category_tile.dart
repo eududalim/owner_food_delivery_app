@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gerente_loja/models/user_admin_model.dart';
 import 'package:gerente_loja/view/screens/product/product_screen.dart';
-import 'package:gerente_loja/view/screens/home/widgets/edit_category_dialog.dart';
 import 'package:shimmer/shimmer.dart';
 
 class CategoryTile extends StatelessWidget {
@@ -87,6 +86,9 @@ class CategoryTile extends StatelessWidget {
                                   leading: CircleAvatar(
                                     backgroundImage:
                                         NetworkImage(product.data["images"][0]),
+                                    backgroundColor: Theme.of(context)
+                                        .primaryColor
+                                        .withAlpha(50),
                                   ),
                                   title: Text(product.data["title"]),
                                   trailing: Text(

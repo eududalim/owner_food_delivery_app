@@ -17,7 +17,7 @@ class UserAdminRepo {
     await Firestore.instance
         .collection('admins')
         .document(uid)
-        .setData(user.toMap(uid));
+        .setData(user.toMap());
   }
 
   Future<bool> createUser(UserAdminModel user, String password) async {

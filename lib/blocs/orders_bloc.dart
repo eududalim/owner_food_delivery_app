@@ -1,7 +1,6 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:gerente_loja/models/user_admin_model.dart';
 import 'package:rxdart/rxdart.dart';
 
 enum SortCriteria { READY_FIRST, READY_LAST }

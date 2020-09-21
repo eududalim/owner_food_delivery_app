@@ -76,7 +76,8 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: Colors.grey[50],
+
+      ///   backgroundColor: Colors.grey[800],
       body: StreamBuilder<LoginState>(
           stream: _loginBloc.outState,
           initialData: LoginState.LOADING,

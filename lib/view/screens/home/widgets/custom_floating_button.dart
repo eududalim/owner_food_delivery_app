@@ -42,8 +42,7 @@ class CustomFloatingButton extends StatelessWidget {
                 })
           ],
         );
-      case 2:
-        return Container();
+      // case 2:
       /* 
         return FloatingActionButton(
           child: Icon(Icons.add),

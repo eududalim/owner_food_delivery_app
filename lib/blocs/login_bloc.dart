@@ -32,6 +32,7 @@ class LoginBloc extends BlocBase with LoginValidators {
   UserAdminModel userModel;
 
   LoginBloc() {
+    FirebaseAuth.instance.signOut();
     userModel = UserAdminModel();
 
     _streamSubscription =
