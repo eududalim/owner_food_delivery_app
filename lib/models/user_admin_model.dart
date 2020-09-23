@@ -11,7 +11,6 @@ class UserAdminModel {
     'complemento': '',
     'referencia': '',
     'rua': '',
-    'numRua': '',
   };
 
   UserAdminModel(
