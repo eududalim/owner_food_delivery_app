@@ -32,7 +32,6 @@ class LoginBloc extends BlocBase with LoginValidators {
   UserAdminModel userModel;
 
   LoginBloc() {
-    FirebaseAuth.instance.signOut();
     userModel = UserAdminModel();
 
     _streamSubscription =
@@ -62,9 +61,10 @@ class LoginBloc extends BlocBase with LoginValidators {
     });
   }
 
-  void submit() async {
+  Future<String> submit() async {
     final email = _emailController.value;
     final password = _passwordController.value;
+    String message = '';
 
     _stateController.add(LoginState.LOADING);
     log('LoginState.Loading');
@@ -76,8 +76,32 @@ class LoginBloc extends BlocBase with LoginValidators {
       log('LoginState.SUCCESS');
     }).catchError((e) {
       _stateController.add(LoginState.FAIL);
-      log('LoginState.FAIL');
+      switch (e.code) {
+        case 'ERROR_INVALID_EMAIL':
+          message = 'Email inválido.';
+          break;
+        case 'ERROR_WRONG_PASSWORD':
+          message = 'Senha incorreta.';
+          break;
+        case 'ERROR_USER_NOT_FOUND':
+          message = 'Usuario não cadastrado.';
+          break;
+        case 'ERROR_USER_DISABLED':
+          message = 'Usuario desabilitado.';
+          break;
+        case 'ERROR_TOO_MANY_REQUESTS':
+          message =
+              'Foram feitas muitas tentativas. Aguarde alguns instantes e tente novamente.';
+          break;
+        case 'ERROR_OPERATION_NOT_ALLOWED':
+          message = 'Verique os campos e tente novamente.';
+          break;
+        default:
+          message = 'Algo deu errado. Tente novmente.';
+      }
     });
+
+    return message;
   }
 
   void signOut() {
@@ -99,20 +123,6 @@ class LoginBloc extends BlocBase with LoginValidators {
         log('usuario sem privilégio');
       return false;
     }).catchError((e) => false);
-
-    /* return await Firestore.instance
-        .collection("admins")
-        .document(user.uid)
-        .get()
-        .then((doc) {
-      if (doc.data != null) {
-        return true;
-      } else {
-        return false;
-      }
-    }).catchError((e) {
-      return false;
-    }); */
   }
 
   @override
