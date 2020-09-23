@@ -20,12 +20,13 @@ class SignUpBloc extends BlocBase with SignUpValidator, LoginValidators {
   UserAdminModel user;
 
   FirebaseUser _firebaseUser;
+  /* 
   SignUpBloc() {
     FirebaseAuth.instance.onAuthStateChanged.listen((event) {
       _firebaseUser = event;
     });
   }
-
+ */
   Stream<String> get outEmail =>
       _emailController.stream.transform(validateEmail);
   Stream<String> get outPassword =>
