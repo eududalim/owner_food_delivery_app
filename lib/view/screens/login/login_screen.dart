@@ -102,7 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           done: false,
                           keyboardType: TextInputType.emailAddress,
                           icon: Icons.alternate_email,
-                          hint: "Email",
+                          hint: "Email", // teste
                           obscure: false,
                           stream: _loginBloc.outEmail,
                           onChanged: _loginBloc.changeEmail,
