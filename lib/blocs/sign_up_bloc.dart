@@ -9,15 +9,13 @@ import 'package:gerente_loja/models/user_admin_model.dart';
 import 'package:gerente_loja/validators/login_validators.dart';
 import 'package:gerente_loja/validators/signup_validator.dart';
 
-enum SignUpState { LOADING, SUCCESS, FAIL, IDLE }
-
 class SignUpBloc extends BlocBase with SignUpValidator, LoginValidators {
   final _emailController = BehaviorSubject<String>();
   final _passwordController = BehaviorSubject<String>();
   final _nameController = BehaviorSubject<String>();
   final _titleStoreController = BehaviorSubject<String>();
   final _phoneController = BehaviorSubject<String>();
-  final _stateController = BehaviorSubject<SignUpState>();
+  final _loadingController = BehaviorSubject<bool>();
 
   UserAdminModel user;
 
@@ -37,7 +35,7 @@ class SignUpBloc extends BlocBase with SignUpValidator, LoginValidators {
       _titleStoreController.stream.transform(validateNameStore);
   Stream<String> get outPhone =>
       _phoneController.stream.transform(validatePhone);
-  Stream<SignUpState> get outState => _stateController.stream;
+  Stream<bool> get outLoading => _loadingController.stream;
 
 /*   Stream<bool> get outSubmitValid => Observable.combineLatest5(outEmail,
       outName, outNameStore, outCpf, outPassword, (a, b, c, d, e) => true); */
@@ -54,12 +52,12 @@ class SignUpBloc extends BlocBase with SignUpValidator, LoginValidators {
     _passwordController.close();
     _nameController.close();
     _phoneController.close();
-    _stateController.close();
+    _loadingController.close();
     _titleStoreController.close();
   }
 
   Future<String> signUp() async {
-    _stateController.add(SignUpState.LOADING);
+    _loadingController.add(true);
 
     user = UserAdminModel(
       email: _emailController.value,
@@ -70,13 +68,13 @@ class SignUpBloc extends BlocBase with SignUpValidator, LoginValidators {
 
     String password = _passwordController.value;
 
-    String errorMessage = '';
+    String message = '';
 
     /// Verifica se não está nulo
     if (user.email == null || user.email.isEmpty) {
-      errorMessage = 'Preencha os campos corretamente';
-      _stateController.add(SignUpState.FAIL);
-      return errorMessage;
+      message = 'Preencha os campos corretamente';
+      _loadingController.add(false);
+      return message;
     } else {
       await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: user.email, password: password)
@@ -86,7 +84,6 @@ class SignUpBloc extends BlocBase with SignUpValidator, LoginValidators {
         user.uid = authResult.user.uid;
         _firebaseUser = authResult.user;
         await _saveDataonFirestore();
-        _stateController.add(SignUpState.SUCCESS);
 
         /// Se houver erro ao criar usuario, verifica qual erro
       }).catchError((e) async {
@@ -101,52 +98,49 @@ class SignUpBloc extends BlocBase with SignUpValidator, LoginValidators {
               /// Quando conluido verifica se já possui cadastro como admin
               if (await _verifyPrivileges(authResult.user)) {
                 await FirebaseAuth.instance.signOut();
-                errorMessage = 'Erro! Usuario já cadastrado';
-                _stateController.add(SignUpState.FAIL);
+                message = 'Erro! Usuario já cadastrado';
                 log('USUARIO JÁ CADASTRADO, DESLOGADO, E RETORNADO UM ERRO');
               } else
                 user.uid = authResult.user.uid;
               _firebaseUser = authResult.user;
               await _saveDataonFirestore();
-              _stateController.add(SignUpState.FAIL);
             }).catchError((e) {
               switch (e.code) {
                 case "ERROR_INVALID_EMAIL":
-                  errorMessage = "Seu email está incorreto.";
+                  message = "Seu email está incorreto.";
                   break;
                 case "ERROR_WRONG_PASSWORD":
-                  errorMessage = "Sua senha está incorreta.";
+                  message = "Sua senha está incorreta.";
                   break;
                 case "ERROR_USER_NOT_FOUND":
-                  errorMessage = "Usuario com este email não existe.";
+                  message = "Usuario com este email não existe.";
                   break;
                 case "ERROR_USER_DISABLED":
-                  errorMessage = "O usuario com este email foi desabilitado.";
+                  message = "O usuario com este email foi desabilitado.";
                   break;
                 case "ERROR_TOO_MANY_REQUESTS":
-                  errorMessage = "Muitos pedidos. Tente novamente mais tarde.";
+                  message = "Muitos pedidos. Tente novamente mais tarde.";
                   break;
                 case "ERROR_OPERATION_NOT_ALLOWED":
-                  errorMessage = "O login com e-mail e senha não está ativado.";
+                  message = "O login com e-mail e senha não está ativado.";
                   break;
                 default:
-                  errorMessage = "Um erro indefinido aconteceu.";
+                  message = "Um erro indefinido aconteceu.";
               }
             });
             break;
 
           case 'ERROR_INVALID_EMAIL':
-            errorMessage = 'Formato de email invalido';
+            message = 'Formato de email invalido';
             break;
 
           default:
-            errorMessage = '';
+            message = '';
         }
-
-        _stateController.add(SignUpState.FAIL);
       });
     }
-    return errorMessage;
+    _loadingController.add(false);
+    return message;
   }
 
   Future<void> _saveDataonFirestore() async {

@@ -22,35 +22,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    _signUpBloc.outState.listen((state) {
-      if (state == SignUpState.SUCCESS) {
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => AddressScreen(),
-        ));
-      }
-      /* else if (state == SignUpState.FAIL) {
-        Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text(
-            'Verifique os campos e preencha-os corretamente!',
-            textAlign: TextAlign.center,
-            textScaleFactor: 1.1,
-          ),
-          backgroundColor: Colors.redAccent,
-        ));
-      } */
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: StreamBuilder<SignUpState>(
-          stream: _signUpBloc.outState,
-          initialData: SignUpState.IDLE,
-          builder: (context, snapshot) {
-            if (snapshot.data == SignUpState.LOADING)
+      body: StreamBuilder<bool>(
+          stream: _signUpBloc.outLoading,
+          initialData: false,
+          builder: (context, loading) {
+            if (loading.data)
               return Center(child: CircularProgressIndicator());
             else
               return Padding(
@@ -110,20 +88,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     SizedBox(
                       height: 50,
                       child: RaisedButton(
-                        onPressed: () async {
-                          log('SIGNUP CHAMADO');
-                          String error = await _signUpBloc.signUp();
-                          error.isEmpty
-                              // ignore: unnecessary_statements
-                              ? null
-                              : Scaffold.of(context).showSnackBar(SnackBar(
-                                  content: Text(
-                                    error,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  backgroundColor: Colors.redAccent,
-                                ));
-                        },
+                        onPressed: _signUp,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(40)),
                         color: Theme.of(context).primaryColor,
@@ -137,5 +102,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
               );
           }),
     );
+  }
+
+  void _signUp() async {
+    String error = await _signUpBloc.signUp();
+    error.isNotEmpty
+        ? Scaffold.of(context).showSnackBar(SnackBar(
+            content: Text(
+              error,
+              textAlign: TextAlign.center,
+            ),
+            backgroundColor: Colors.redAccent,
+          ))
+        : Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => AddressScreen(),
+          ));
   }
 }
