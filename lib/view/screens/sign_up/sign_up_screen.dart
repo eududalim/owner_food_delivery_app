@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gerente_loja/blocs/sign_up_bloc.dart';
 import 'package:gerente_loja/view/screens/address/address_screen.dart';
+import 'package:gerente_loja/view/screens/login/widgets/button_sign_up.dart';
+import 'package:gerente_loja/view/screens/sign_up/widgets/button_sign_up.dart';
 import 'package:gerente_loja/view/widgets/input_field.dart';
 import 'package:gerente_loja/view/screens/sign_up/widgets/header_sign_up.dart';
 
@@ -11,7 +13,8 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  final _signUpBloc = SignUpBloc();
+  SignUpBloc _signUpBloc;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void dispose() {
@@ -20,100 +23,82 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   @override
+  void initState() {
+    _signUpBloc = SignUpBloc();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       body: StreamBuilder<bool>(
           stream: _signUpBloc.outLoading,
           initialData: false,
           builder: (context, loading) {
-            if (loading.data)
+            if (!loading.hasData) {
+              return Container();
+            }
+            if (loading.data) {
               return Center(child: CircularProgressIndicator());
-            else
-              return Padding(
+            } else
+              return ListView(
                 padding: const EdgeInsets.all(16.0),
-                child: ListView(
-                  shrinkWrap: true,
-                  children: [
-                    HeaderSignUp(),
-                    SizedBox(height: 50),
-                    InputField(
-                      done: false,
-                      hint: 'Nome Pessoal Completo',
-                      icon: Icons.person,
-                      obscure: false,
-                      onChanged: _signUpBloc.changeName,
-                      stream: _signUpBloc.outName,
-                    ),
-                    SizedBox(height: 20),
-                    InputField(
-                      done: false,
-                      hint: 'Titulo Comercial',
-                      icon: Icons.store,
-                      obscure: false,
-                      onChanged: _signUpBloc.changeTitleStore,
-                      stream: _signUpBloc.outTitleStore,
-                    ),
-                    SizedBox(height: 20),
-                    InputField(
-                      done: false,
-                      keyboardType: TextInputType.emailAddress,
-                      hint: 'Email',
-                      icon: Icons.alternate_email,
-                      obscure: false,
-                      onChanged: _signUpBloc.changeEmail,
-                      stream: _signUpBloc.outEmail,
-                    ),
-                    SizedBox(height: 20),
-                    InputField(
-                      done: false,
-                      keyboardType: TextInputType.number,
-                      hint: 'Celular',
-                      icon: Icons.phone,
-                      obscure: false,
-                      onChanged: _signUpBloc.changePhone,
-                      stream: _signUpBloc.outPhone,
-                    ),
-                    SizedBox(height: 20),
-                    InputField(
-                      done: true,
-                      hint: 'Crie uma senha',
-                      icon: Icons.lock_outline,
-                      obscure: true,
-                      onChanged: _signUpBloc.changePassword,
-                      stream: _signUpBloc.outPassword,
-                    ),
-                    SizedBox(height: 30),
-                    SizedBox(
-                      height: 50,
-                      child: RaisedButton(
-                        onPressed: _signUp,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(40)),
-                        color: Theme.of(context).primaryColor,
-                        splashColor: Colors.grey,
-                        textColor: Colors.white,
-                        child: Text('Criar conta comercial'),
-                      ),
-                    )
-                  ],
-                ),
+                shrinkWrap: true,
+                children: [
+                  HeaderSignUp(),
+                  SizedBox(height: 50),
+                  InputField(
+                    done: false,
+                    hint: 'Nome Pessoal Completo',
+                    icon: Icons.person,
+                    obscure: false,
+                    onChanged: _signUpBloc.changeName,
+                    stream: _signUpBloc.outName,
+                  ),
+                  SizedBox(height: 20),
+                  InputField(
+                    done: false,
+                    hint: 'Titulo Comercial',
+                    icon: Icons.store,
+                    obscure: false,
+                    onChanged: _signUpBloc.changeTitleStore,
+                    stream: _signUpBloc.outTitleStore,
+                  ),
+                  SizedBox(height: 20),
+                  InputField(
+                    done: false,
+                    keyboardType: TextInputType.emailAddress,
+                    hint: 'Email',
+                    icon: Icons.alternate_email,
+                    obscure: false,
+                    onChanged: _signUpBloc.changeEmail,
+                    stream: _signUpBloc.outEmail,
+                  ),
+                  SizedBox(height: 20),
+                  InputField(
+                    done: false,
+                    keyboardType: TextInputType.number,
+                    hint: 'Celular',
+                    icon: Icons.phone,
+                    obscure: false,
+                    onChanged: _signUpBloc.changePhone,
+                    stream: _signUpBloc.outPhone,
+                  ),
+                  SizedBox(height: 20),
+                  InputField(
+                    done: true,
+                    hint: 'Crie uma senha',
+                    icon: Icons.lock_outline,
+                    obscure: true,
+                    onChanged: _signUpBloc.changePassword,
+                    stream: _signUpBloc.outPassword,
+                  ),
+                  SizedBox(height: 30),
+                  ButtonSaveSignUp(_signUpBloc.signUp),
+                ],
               );
           }),
     );
-  }
-
-  void _signUp() async {
-    String error = await _signUpBloc.signUp();
-    error.isNotEmpty
-        ? Scaffold.of(context).showSnackBar(SnackBar(
-            content: Text(
-              error,
-              textAlign: TextAlign.center,
-            ),
-            backgroundColor: Colors.redAccent,
-          ))
-        : Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => AddressScreen(),
-          ));
   }
 }

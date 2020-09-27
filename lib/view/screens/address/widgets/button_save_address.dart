@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:gerente_loja/view/screens/address/address_screen.dart';
+import 'package:gerente_loja/view/screens/home/home_screen.dart';
 
-class ButtonSaveSignUp extends StatelessWidget {
-  final Function _signUp;
-  ButtonSaveSignUp(this._signUp);
+class ButtonSaveAddress extends StatelessWidget {
+  final Function _save;
+  ButtonSaveAddress(this._save);
   @override
   Widget build(BuildContext context) {
     void _onpressed() async {
-      String error = await _signUp();
+      String error = await _save();
       error.isNotEmpty
           ? Scaffold.of(context).showSnackBar(SnackBar(
               content: Text(
@@ -17,7 +17,7 @@ class ButtonSaveSignUp extends StatelessWidget {
               backgroundColor: Colors.redAccent,
             ))
           : Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => AddressScreen(),
+              builder: (context) => HomeScreen(),
             ));
     }
 
@@ -29,7 +29,7 @@ class ButtonSaveSignUp extends StatelessWidget {
         color: Theme.of(context).primaryColor,
         splashColor: Colors.grey,
         textColor: Colors.white,
-        child: Text('Criar conta comercial'),
+        child: Text('Salvar Dados e Conluir'),
       ),
     );
   }

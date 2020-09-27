@@ -12,7 +12,16 @@ class AccountBloc extends BlocBase {
   Stream<bool> get outEnabled => _enabledController.stream;
   Stream<bool> get outLoading => _loadingController.stream;
 
-  Map<String, dynamic> unsavedData;
+  Map<String, dynamic> unsavedData = {
+    'address': {
+      'rua': '',
+      'bairro': '',
+      'cidade': '',
+      'estado': '',
+      'complemento': '',
+      'referencia': ''
+    }
+  };
 
   void saveTitleStore(String title) {
     unsavedData["titleStore"] = title;

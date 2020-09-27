@@ -165,19 +165,4 @@ class SignUpBloc extends BlocBase with SignUpValidator, LoginValidators {
       return false;
     }).catchError((e) => false);
   }
-
-  Future<bool> _verifyIsUser(FirebaseUser user) async {
-    return await Firestore.instance
-        .collection('users')
-        .document(user.uid)
-        .get()
-        .then((doc) {
-      if (doc.data['name'] != null) {
-        log('doc.data[name] existe. usuario possui cadastro de cliente');
-        return true;
-      } else
-        log('usuario não possui nenhum tipo de cadastro ainda');
-      return false;
-    }).catchError((e) => false);
-  }
 }
