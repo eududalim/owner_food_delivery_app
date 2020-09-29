@@ -20,13 +20,15 @@ class SignUpValidator {
   });
 
   ///  '^\([1-9]{2}\) (?:[2-8]|9[1-9])[0-9]{3}\-[0-9]{4}$'
+  ///
 
   final validatePhone =
       StreamTransformer<String, String>.fromHandlers(handleData: (phone, sink) {
-    if (phone.length > 6) {
+    if (phone.contains(
+        RegExp(r'^\([1-9]{2}\) (?:[2-8]|9[1-9])[0-9]{3}\-[0-9]{4}$'))) {
       sink.add(phone);
     } else {
-      sink.addError("Insira um CPF válido!");
+      sink.addError("Insira um celular válido!");
     }
   });
 }

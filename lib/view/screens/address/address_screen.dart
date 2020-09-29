@@ -2,15 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:gerente_loja/blocs/address_bloc.dart';
 import 'package:gerente_loja/view/screens/address/widgets/button_save_address.dart';
 import 'package:gerente_loja/view/screens/address/widgets/header_address.dart';
-import 'package:gerente_loja/view/screens/sign_up/widgets/header_sign_up.dart';
 import 'package:gerente_loja/view/widgets/input_field.dart';
 
-class AddressScreen extends StatelessWidget {
+class AddressScreen extends StatefulWidget {
+  @override
+  _AddressScreenState createState() => _AddressScreenState();
+}
+
+class _AddressScreenState extends State<AddressScreen> {
   final _addressBloc = AddressBloc();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Falta pouco...'),
+      ),
       body: SafeArea(
         child: StreamBuilder<bool>(
             initialData: false,
@@ -68,7 +75,7 @@ class AddressScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 20),
                     InputField(
-                      done: false,
+                      done: true,
                       hint: 'Estado',
                       obscure: false,
                       onChanged: _addressBloc.changeEstado,

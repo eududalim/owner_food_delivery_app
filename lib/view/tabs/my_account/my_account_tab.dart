@@ -129,7 +129,9 @@ class _MyAccountTabState extends State<MyAccountTab> {
                       ),
                       TextFormField(
                         enabled: enabled.data,
-                        initialValue: snapshot.data['address']['rua'],
+                        initialValue: snapshot.data['address'] == null
+                            ? ''
+                            : snapshot.data['address']['rua'],
                         style: _fieldStyle,
                         decoration: _buildDecoration("Rua"),
                         onSaved: _accountBloc.saveRua,
@@ -141,7 +143,9 @@ class _MyAccountTabState extends State<MyAccountTab> {
                           Flexible(
                             child: TextFormField(
                               enabled: enabled.data,
-                              initialValue: snapshot.data['address']['bairro'],
+                              initialValue: snapshot.data['address'] == null
+                                  ? ''
+                                  : snapshot.data['address']['bairro'],
                               style: _fieldStyle,
                               decoration: _buildDecoration("Bairro"),
                               onSaved: _accountBloc.saveBairro,
@@ -151,7 +155,9 @@ class _MyAccountTabState extends State<MyAccountTab> {
                           Flexible(
                             child: TextFormField(
                               enabled: enabled.data,
-                              initialValue: snapshot.data['address']['cidade'],
+                              initialValue: snapshot.data['address'] == null
+                                  ? ''
+                                  : snapshot.data['address']['cidade'],
                               style: _fieldStyle,
                               decoration: _buildDecoration("Cidade"),
                               onSaved: _accountBloc.saveCidade,
@@ -161,7 +167,9 @@ class _MyAccountTabState extends State<MyAccountTab> {
                           Flexible(
                             child: TextFormField(
                               enabled: enabled.data,
-                              initialValue: snapshot.data['address']['estado'],
+                              initialValue: snapshot.data['address'] == null
+                                  ? ''
+                                  : snapshot.data['address']['estado'],
                               style: _fieldStyle,
                               decoration: _buildDecoration("Estado"),
                               onSaved: _accountBloc.saveEstado,
@@ -172,7 +180,9 @@ class _MyAccountTabState extends State<MyAccountTab> {
                       ),
                       TextFormField(
                         enabled: enabled.data,
-                        initialValue: snapshot.data['address']['complemento'],
+                        initialValue: snapshot.data['address'] == null
+                            ? ''
+                            : snapshot.data['address']['complemento'],
                         style: _fieldStyle,
                         decoration: _buildDecoration("Complemento"),
                         onSaved: _accountBloc.saveComplemento,
@@ -180,7 +190,9 @@ class _MyAccountTabState extends State<MyAccountTab> {
                       ),
                       TextFormField(
                         enabled: enabled.data,
-                        initialValue: snapshot.data['address']['referencia'],
+                        initialValue: snapshot.data['address'] == null
+                            ? ''
+                            : snapshot.data['address']['referencia'],
                         style: _fieldStyle,
                         decoration: _buildDecoration("Referência"),
                         onSaved: _accountBloc.saveReferencia,

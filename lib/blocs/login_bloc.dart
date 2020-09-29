@@ -34,31 +34,35 @@ class LoginBloc extends BlocBase with LoginValidators {
   LoginBloc() {
     userModel = UserAdminModel();
 
-    _streamSubscription =
-        FirebaseAuth.instance.onAuthStateChanged.listen((user) async {
-      if (user != null) {
-        if (await verifyPrivileges(user)) {
-          await Firestore.instance
-              .collection('admins')
-              .document(user.uid)
-              .get()
-              .then((doc) {
-            userModel.name = doc.data['name'];
-            userModel.phone = doc.data['phone'];
-            userModel.titleStore = doc.data['titleStore'];
-            userModel.email = doc.data['email'];
-            userModel.uid = user.uid;
-            userModel.address = doc.data['address'];
-          });
-          _stateController.add(LoginState.SUCCESS);
+    try {
+      _streamSubscription =
+          FirebaseAuth.instance.onAuthStateChanged.listen((user) async {
+        if (user != null) {
+          if (await verifyPrivileges(user)) {
+            await Firestore.instance
+                .collection('admins')
+                .document(user.uid)
+                .get()
+                .then((doc) {
+              userModel.name = doc.data['name'];
+              userModel.phone = doc.data['phone'];
+              userModel.titleStore = doc.data['titleStore'];
+              userModel.email = doc.data['email'];
+              userModel.uid = user.uid;
+              userModel.address = doc.data['address'];
+            });
+            _stateController.add(LoginState.SUCCESS);
+          } else {
+            FirebaseAuth.instance.signOut();
+            _stateController.add(LoginState.FAIL);
+          }
         } else {
-          FirebaseAuth.instance.signOut();
-          _stateController.add(LoginState.FAIL);
+          _stateController.add(LoginState.IDLE);
         }
-      } else {
-        _stateController.add(LoginState.IDLE);
-      }
-    });
+      });
+    } on Exception catch (e) {
+      _stateController.add(LoginState.FAIL);
+    }
   }
 
   Future<String> submit() async {

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'package:gerente_loja/models/user_admin_model.dart';
@@ -20,13 +21,7 @@ class SignUpBloc extends BlocBase with SignUpValidator, LoginValidators {
   UserAdminModel user;
 
   FirebaseUser _firebaseUser;
-  /* 
-  SignUpBloc() {
-    FirebaseAuth.instance.onAuthStateChanged.listen((event) {
-      _firebaseUser = event;
-    });
-  }
- */
+
   Stream<String> get outEmail =>
       _emailController.stream.transform(validateEmail);
   Stream<String> get outPassword =>
@@ -37,9 +32,6 @@ class SignUpBloc extends BlocBase with SignUpValidator, LoginValidators {
   Stream<String> get outPhone =>
       _phoneController.stream.transform(validatePhone);
   Stream<bool> get outLoading => _loadingController.stream;
-
-/*   Stream<bool> get outSubmitValid => Observable.combineLatest5(outEmail,
-      outName, outNameStore, outCpf, outPassword, (a, b, c, d, e) => true); */
 
   Function(String) get changeEmail => _emailController.sink.add;
   Function(String) get changePassword => _passwordController.sink.add;
@@ -59,17 +51,14 @@ class SignUpBloc extends BlocBase with SignUpValidator, LoginValidators {
 
   Future<String> signUp() async {
     _loadingController.add(true);
-
     user = UserAdminModel(
       email: _emailController.value,
       name: _nameController.value,
       phone: _phoneController.value,
       titleStore: _titleStoreController.value,
     );
-
     String password = _passwordController.value;
-
-    String message = '';
+    String message;
 
     /// Verifica se não está nulo
     if (user.email == null || user.email.isEmpty) {
@@ -77,79 +66,56 @@ class SignUpBloc extends BlocBase with SignUpValidator, LoginValidators {
       _loadingController.add(false);
       return message;
     } else {
-      await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: user.email, password: password)
-          .then((authResult) async {
-        /// Se usuario foi criado com sucesso dá um SUCCESS e não retorna erro
-        log('USUARIO CRIADO');
-        user.uid = authResult.user.uid;
-        _firebaseUser = authResult.user;
-        await _saveDataonFirestore();
-
-        /// Se houver erro ao criar usuario, verifica qual erro
-      }).catchError((e) async {
-        switch (e.code) {
+      ///Cria usuario
+      PlatformException error = await _createUser(user.email, password);
+      if (error != null)
+        switch (error.code) {
           case 'ERROR_EMAIL_ALREADY_IN_USE':
-
-            /// Realiza o login com o email já cadastrado
-            await FirebaseAuth.instance
-                .signInWithEmailAndPassword(
-                    email: user.email, password: password)
-                .then((authResult) async {
-              /// Quando conluido verifica se já possui cadastro como admin
-              if (await _verifyPrivileges(authResult.user)) {
-                await FirebaseAuth.instance.signOut();
-                message = 'Erro! Usuario já cadastrado';
-                log('USUARIO JÁ CADASTRADO, DESLOGADO, E RETORNADO UM ERRO');
-              } else
-                user.uid = authResult.user.uid;
-              _firebaseUser = authResult.user;
-              await _saveDataonFirestore();
-            }).catchError((e) {
-              switch (e.code) {
-                case "ERROR_INVALID_EMAIL":
-                  message = "Seu email está incorreto.";
-                  break;
-                case "ERROR_WRONG_PASSWORD":
-                  message = "Sua senha está incorreta.";
-                  break;
-                case "ERROR_USER_NOT_FOUND":
-                  message = "Usuario com este email não existe.";
-                  break;
-                case "ERROR_USER_DISABLED":
-                  message = "O usuario com este email foi desabilitado.";
-                  break;
-                case "ERROR_TOO_MANY_REQUESTS":
-                  message = "Muitos pedidos. Tente novamente mais tarde.";
-                  break;
-                case "ERROR_OPERATION_NOT_ALLOWED":
-                  message = "O login com e-mail e senha não está ativado.";
-                  break;
-                default:
-                  message = "Um erro indefinido aconteceu.";
-              }
-            });
+            message = await _signIn(user.email, password);
             break;
-
           case 'ERROR_INVALID_EMAIL':
             message = 'Formato de email invalido';
             break;
-
           default:
             message = '';
         }
-      });
+
+      _loadingController.add(false);
+      return message;
     }
-    _loadingController.add(false);
-    return message;
   }
+
+  ///Function to create admin user with email in use
+
+  // ignore: missing_return
+  Future<String> _signIn(String email, String password) async {
+    await FirebaseAuth.instance
+        .signInWithEmailAndPassword(email: email, password: password)
+        .then((authResult) async {
+      if (await _verifyPrivileges(authResult.user)) {
+        await FirebaseAuth.instance.signOut();
+        return 'Usuario já cadastrado. Faça login para continuar.';
+      } else
+        user.uid = authResult.user.uid;
+      _firebaseUser = authResult.user;
+      await _saveDataonFirestore();
+      return '';
+    }).catchError((error) async => _errorHandlingSignIn(error));
+  }
+
+  /// Function for save data on Firebase
 
   Future<void> _saveDataonFirestore() async {
     await Firestore.instance
         .collection('admins')
         .document(user.uid)
-        .setData(user.toMap());
+        .setData(user.toMap())
+        .catchError((e) {
+      log(e.toString());
+    });
   }
+
+  /// Function for verify if user have privilegies
 
   Future<bool> _verifyPrivileges(user) async {
     return await Firestore.instance
@@ -164,5 +130,48 @@ class SignUpBloc extends BlocBase with SignUpValidator, LoginValidators {
         log('usuario sem privilégio');
       return false;
     }).catchError((e) => false);
+  }
+
+  /// Function for create user on Firebase and Firestore with email and pass
+
+  Future<PlatformException> _createUser(String email, String password) async {
+    return await FirebaseAuth.instance
+        .createUserWithEmailAndPassword(email: email, password: password)
+        .then((authResult) async {
+      log('USUARIO CRIADO');
+      user.uid = authResult.user.uid;
+      _firebaseUser = authResult.user;
+      await _saveDataonFirestore();
+      log('dados salvos');
+      return null;
+    }).catchError((error) => error);
+  }
+
+  /// Function for error handling when try subscription of user
+  /// with email already in use
+
+  String _errorHandlingSignIn(PlatformException error) {
+    switch (error.code) {
+      case "ERROR_INVALID_EMAIL":
+        return "Seu email está incorreto.";
+        break;
+      case "ERROR_WRONG_PASSWORD":
+        return "Sua senha está incorreta.";
+        break;
+      case "ERROR_USER_NOT_FOUND":
+        return "Usuario com este email não existe.";
+        break;
+      case "ERROR_USER_DISABLED":
+        return "O usuario com este email foi desabilitado.";
+        break;
+      case "ERROR_TOO_MANY_REQUESTS":
+        return "Muitos pedidos. Tente novamente mais tarde.";
+        break;
+      case "ERROR_OPERATION_NOT_ALLOWED":
+        return "O login com e-mail e senha não está ativado.";
+        break;
+      default:
+        return "Um erro indefinido aconteceu.";
+    }
   }
 }

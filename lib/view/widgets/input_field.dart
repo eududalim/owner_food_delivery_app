@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class InputField extends StatefulWidget {
   final IconData icon;
@@ -25,10 +27,18 @@ class InputField extends StatefulWidget {
 class _InputFieldState extends State<InputField> {
   @override
   Widget build(BuildContext context) {
+    final _maskPhone = MaskTextInputFormatter(mask: '(##) #####-####');
+
     return StreamBuilder<String>(
         stream: widget.stream,
         builder: (context, snapshot) {
           return TextField(
+            inputFormatters: widget.hint == 'Celular'
+                ? [
+                    _maskPhone,
+                    LengthLimitingTextInputFormatter(15),
+                  ]
+                : null,
             textInputAction:
                 widget.done ? TextInputAction.done : TextInputAction.next,
             onSubmitted: (value) {

@@ -40,6 +40,7 @@ dependencies:
   bloc_pattern: ^1.5.2
   shimmer: ^1.0.0
   splashscreen: ^1.2.0
+  mask_text_input_formatter: ^1.1.0
 
 dev_dependencies:
   flutter_test:

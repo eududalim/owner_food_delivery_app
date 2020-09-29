@@ -62,14 +62,14 @@ class AddressBloc extends BlocBase with AddressValidators {
       'bairro': _bairroController.value,
       'estado': _estadoController.value,
       'complemento': _complementoController.value,
-      'referencia': _referenciaController,
+      'referencia': _referenciaController.value,
       'rua': _ruaController.value,
     };
 
     await Firestore.instance
         .collection('admins')
         .document(user.uid)
-        .updateData({'address': address}).catchError((error) {
+        .setData({'address': address}).catchError((error) {
       log('Document not exist');
       message = 'Document not exist';
     });

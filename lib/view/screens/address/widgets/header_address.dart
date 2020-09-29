@@ -6,13 +6,14 @@ class HeaderAddress extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        /* 
         Container(
           padding: EdgeInsets.symmetric(horizontal: 16),
           child: Text(
             'Falta pouco...',
             style: TextStyle(fontSize: 35, fontWeight: FontWeight.w300),
           ),
-        ),
+        ), */
         Container(
           padding: EdgeInsets.all(20),
           child: Text(
