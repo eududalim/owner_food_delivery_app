@@ -16,14 +16,15 @@ class OrdersTab extends StatelessWidget {
             if (!snapshot.hasData)
               return Center(
                 child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation(Colors.pinkAccent),
+                  valueColor: AlwaysStoppedAnimation(
+                      Theme.of(context).primaryColorDark),
                 ),
               );
             else if (snapshot.data.length == 0)
               return Center(
                 child: Text(
-                  "Nenhum pedido encontrado!",
-                  style: TextStyle(color: Colors.pinkAccent),
+                  "Nenhum pedido encontrado",
+                  style: TextStyle(color: Theme.of(context).primaryColorDark),
                 ),
               );
 

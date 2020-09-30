@@ -14,14 +14,14 @@ class CustomFloatingButton extends StatelessWidget {
       case 0:
         return SpeedDial(
           child: Icon(Icons.sort),
-          backgroundColor: Colors.pinkAccent,
+          backgroundColor: Theme.of(context).primaryColorDark,
           overlayOpacity: 0.4,
           overlayColor: Colors.black,
           children: [
             SpeedDialChild(
                 child: Icon(
                   Icons.arrow_downward,
-                  color: Colors.pinkAccent,
+                  color: Theme.of(context).primaryColorDark,
                 ),
                 backgroundColor: Colors.white,
                 label: "Concluídos Abaixo",
@@ -32,7 +32,7 @@ class CustomFloatingButton extends StatelessWidget {
             SpeedDialChild(
                 child: Icon(
                   Icons.arrow_upward,
-                  color: Colors.pinkAccent,
+                  color: Theme.of(context).primaryColorDark,
                 ),
                 backgroundColor: Colors.white,
                 label: "Concluídos Acima",
@@ -42,16 +42,15 @@ class CustomFloatingButton extends StatelessWidget {
                 })
           ],
         );
-      // case 2:
-      /* 
+      case 1:
         return FloatingActionButton(
-          child: Icon(Icons.add),
-          backgroundColor: Colors.pinkAccent,
+          child: Icon(Icons.refresh),
+          backgroundColor: Theme.of(context).primaryColorDark,
           onPressed: () {
-            showDialog(
-                context: context, builder: (context) => EditCategoryDialog());
+            //   showDialog(
+            //       context: context, builder: (context) => EditCategoryDialog());
           },
-        ); */
+        );
       default:
         return Container();
     }

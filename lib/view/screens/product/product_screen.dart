@@ -117,7 +117,7 @@ class _ProductScreenState extends State<ProductScreen> with ProductValidator {
                         maxLines: 6,
                         decoration: _buildDecoration("Descrição"),
                         onSaved: _productBloc.saveDescription,
-                        validator: validateDescription,
+                        //validator: validateDescription,
                       ),
                       TextFormField(
                         initialValue:

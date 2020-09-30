@@ -9,8 +9,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Vem Delivery para Anunciantes',
       theme: ThemeData(
-        primaryColor: Colors.teal[400],
-      ),
+          primaryColor: Colors.teal[400], primaryColorDark: Colors.teal[800]),
       debugShowCheckedModeBanner: false,
       home: SplashScreenPage(),
     );

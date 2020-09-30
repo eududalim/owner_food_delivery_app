@@ -52,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[850],
+      backgroundColor: Colors.grey[100],
       bottomNavigationBar: CustomBottomNavigationBar(_page, _pageController),
       body: SafeArea(
         child: BlocProvider<UserClientBloc>(
