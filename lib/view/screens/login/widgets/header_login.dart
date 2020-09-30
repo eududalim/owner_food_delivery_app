@@ -5,10 +5,17 @@ class HeaderLogin extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(
-          Icons.store,
-          size: 100,
-          color: Theme.of(context).primaryColor,
+        // Icon(
+        //   Icons.store,
+        //   size: 100,
+        //   color: Theme.of(context).primaryColor,
+        // ),
+        Image(
+          image: AssetImage('assets/delivery-icon-secondary.png'),
+          height: 90,
+        ),
+        SizedBox(
+          width: 10,
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,

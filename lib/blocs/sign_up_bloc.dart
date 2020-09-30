@@ -77,7 +77,7 @@ class SignUpBloc extends BlocBase with SignUpValidator, LoginValidators {
             message = 'Formato de email invalido';
             break;
           default:
-            message = '';
+            message = 'Ocorreu um erro. Tente novamente.';
         }
 
       _loadingController.add(false);
@@ -134,7 +134,7 @@ class SignUpBloc extends BlocBase with SignUpValidator, LoginValidators {
 
   /// Function for create user on Firebase and Firestore with email and pass
 
-  Future<PlatformException> _createUser(String email, String password) async {
+  Future<Object> _createUser(String email, String password) async {
     return await FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: email, password: password)
         .then((authResult) async {

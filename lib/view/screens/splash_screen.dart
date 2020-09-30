@@ -18,10 +18,15 @@ class SplashScreenPage extends StatelessWidget {
             return SplashScreen(
               seconds: 2,
               loaderColor: Colors.white,
-              title: Text('Vem Delivery',
+              photoSize: 70,
+              image: Image(
+                image: AssetImage('assets/delivery-icon-secondary.png'),
+              ),
+              title: Text('Vem Delivery \n App do Anunciantes',
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                       color: Colors.white,
-                      fontSize: 40,
+                      fontSize: 23,
                       fontWeight: FontWeight.w500)),
               backgroundColor: Theme.of(context).primaryColor,
               navigateAfterSeconds: snapshot.data == LoginState.SUCCESS

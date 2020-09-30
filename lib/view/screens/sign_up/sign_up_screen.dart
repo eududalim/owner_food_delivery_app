@@ -35,7 +35,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
               if (!loading.hasData) {
                 return Container();
               }
-              if (loading.data) {
+              if (loading.data &&
+                  loading.connectionState == ConnectionState.waiting) {
                 return Center(
                     child: CircularProgressIndicator(
                   valueColor:
