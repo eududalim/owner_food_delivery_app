@@ -2,8 +2,10 @@ import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gerente_loja/blocs/account_bloc.dart';
+import 'package:gerente_loja/blocs/address_bloc.dart';
 import 'package:gerente_loja/blocs/login_bloc.dart';
 import 'package:gerente_loja/models/user_admin_model.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class MyAccountTab extends StatefulWidget {
   @override
@@ -13,15 +15,18 @@ class MyAccountTab extends StatefulWidget {
 class _MyAccountTabState extends State<MyAccountTab> {
   InputDecoration _buildDecoration(String label) {
     return InputDecoration(
-        labelText: label, labelStyle: TextStyle(color: Colors.grey));
+        border: InputBorder.none,
+        labelText: label,
+        labelStyle: TextStyle(color: Colors.grey[600]));
   }
 
   @override
   Widget build(BuildContext context) {
     final _loginBloc = BlocProvider.of<LoginBloc>(context);
-    final _fieldStyle = TextStyle(color: Colors.white, fontSize: 16);
+    final _address = AddressBloc();
+    final _fieldStyle = TextStyle(fontSize: 16);
     final _formKey = GlobalKey<FormState>();
-
+    final _maskPhone = MaskTextInputFormatter(mask: '(##) #####-####');
     UserAdminModel _user = _loginBloc.userModel;
     AccountBloc _accountBloc = AccountBloc(_user);
 
@@ -94,6 +99,7 @@ class _MyAccountTabState extends State<MyAccountTab> {
                       ),
                       TextFormField(
                         enabled: enabled.data,
+                        inputFormatters: [_maskPhone],
                         initialValue: snapshot.data['phone'],
                         style: _fieldStyle,
                         decoration: _buildDecoration("Telefone"),
@@ -111,7 +117,9 @@ class _MyAccountTabState extends State<MyAccountTab> {
                       ),
 
                       //ENDEREÇO///////////////////////////////////////////////
-                      SizedBox(height: 30),
+                      SizedBox(height: 20),
+                      Divider(),
+                      SizedBox(height: 20),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
@@ -128,15 +136,14 @@ class _MyAccountTabState extends State<MyAccountTab> {
                         ],
                       ),
                       TextFormField(
-                        enabled: enabled.data,
-                        initialValue: snapshot.data['address'] == null
-                            ? ''
-                            : snapshot.data['address']['rua'],
-                        style: _fieldStyle,
-                        decoration: _buildDecoration("Rua"),
-                        onSaved: _accountBloc.saveRua,
-                        validator: _accountBloc.validateTitleStore,
-                      ),
+                          enabled: enabled.data,
+                          initialValue: snapshot.data['address'] == null
+                              ? ''
+                              : snapshot.data['address']['rua'],
+                          style: _fieldStyle,
+                          decoration: _buildDecoration("Rua"),
+                          onSaved: _accountBloc.saveRua,
+                          validator: _accountBloc.validate),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -149,10 +156,11 @@ class _MyAccountTabState extends State<MyAccountTab> {
                               style: _fieldStyle,
                               decoration: _buildDecoration("Bairro"),
                               onSaved: _accountBloc.saveBairro,
-                              validator: _accountBloc.validateTitleStore,
+                              validator: _accountBloc.validate,
                             ),
                           ),
                           Flexible(
+                            fit: FlexFit.loose,
                             child: TextFormField(
                               enabled: enabled.data,
                               initialValue: snapshot.data['address'] == null
@@ -161,10 +169,11 @@ class _MyAccountTabState extends State<MyAccountTab> {
                               style: _fieldStyle,
                               decoration: _buildDecoration("Cidade"),
                               onSaved: _accountBloc.saveCidade,
-                              validator: _accountBloc.validateTitleStore,
+                              validator: _accountBloc.validate,
                             ),
                           ),
                           Flexible(
+                            fit: FlexFit.tight,
                             child: TextFormField(
                               enabled: enabled.data,
                               initialValue: snapshot.data['address'] == null
@@ -173,7 +182,7 @@ class _MyAccountTabState extends State<MyAccountTab> {
                               style: _fieldStyle,
                               decoration: _buildDecoration("Estado"),
                               onSaved: _accountBloc.saveEstado,
-                              validator: _accountBloc.validateTitleStore,
+                              validator: _accountBloc.validate,
                             ),
                           ),
                         ],
@@ -186,7 +195,6 @@ class _MyAccountTabState extends State<MyAccountTab> {
                         style: _fieldStyle,
                         decoration: _buildDecoration("Complemento"),
                         onSaved: _accountBloc.saveComplemento,
-                        validator: _accountBloc.validateTitleStore,
                       ),
                       TextFormField(
                         enabled: enabled.data,
@@ -196,7 +204,7 @@ class _MyAccountTabState extends State<MyAccountTab> {
                         style: _fieldStyle,
                         decoration: _buildDecoration("Referência"),
                         onSaved: _accountBloc.saveReferencia,
-                        validator: _accountBloc.validateTitleStore,
+                        validator: _accountBloc.validate,
                       ),
                       SizedBox(height: 20),
                       Row(
@@ -208,7 +216,10 @@ class _MyAccountTabState extends State<MyAccountTab> {
                               builder: (context, snapshot) {
                                 if (snapshot.hasData) if (snapshot.data)
                                   return Container(
-                                    child: CircularProgressIndicator(),
+                                    child: CircularProgressIndicator(
+                                      valueColor: AlwaysStoppedAnimation(
+                                          Theme.of(context).primaryColor),
+                                    ),
                                   );
                                 return FlatButton.icon(
                                   padding: EdgeInsets.zero,

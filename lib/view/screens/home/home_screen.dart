@@ -24,7 +24,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   UserClientBloc _userBloc;
   OrdersBloc _ordersBloc;
-  LoginBloc _loginBloc;
 
   @override
   initState() {
@@ -32,53 +31,55 @@ class _HomeScreenState extends State<HomeScreen> {
     _pageController = PageController();
     _userBloc = UserClientBloc();
     _ordersBloc = OrdersBloc();
-    _loginBloc = LoginBloc();
-
-    _loginBloc.outState.listen((state) {
-      if (state == LoginState.FAIL || state == LoginState.IDLE) {
-        Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => LoginScreen(),
-        ));
-      }
-    });
   }
 
   @override
   void dispose() {
     _pageController.dispose();
+    _ordersBloc.dispose();
+    _userBloc.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final _loginBloc = BlocProvider.of<LoginBloc>(context);
     return Scaffold(
       backgroundColor: Colors.grey[100],
       bottomNavigationBar: CustomBottomNavigationBar(_page, _pageController),
-      body: SafeArea(
-        child: BlocProvider<UserClientBloc>(
-          bloc: _userBloc,
-          child: BlocProvider<OrdersBloc>(
-            bloc: _ordersBloc,
-            child: BlocProvider<LoginBloc>(
-              bloc: _loginBloc,
-              child: PageView(
-                controller: _pageController,
-                onPageChanged: (p) {
-                  setState(() {
-                    _page = p;
-                  });
-                },
-                children: <Widget>[
-                  /// UsersTab(),
-                  OrdersTab(),
-                  ProductsTab(),
-                  MyAccountTab()
-                ],
+      body: StreamBuilder<LoginState>(
+          stream: _loginBloc.outState,
+          builder: (context, state) {
+            if (state.data == LoginState.FAIL ||
+                state.data == LoginState.IDLE) {
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) => BlocProvider<LoginBloc>(
+                    bloc: _loginBloc, child: LoginScreen()),
+              ));
+            }
+            return SafeArea(
+              child: BlocProvider<UserClientBloc>(
+                bloc: _userBloc,
+                child: BlocProvider<OrdersBloc>(
+                  bloc: _ordersBloc,
+                  child: PageView(
+                    controller: _pageController,
+                    onPageChanged: (p) {
+                      setState(() {
+                        _page = p;
+                      });
+                    },
+                    children: <Widget>[
+                      /// UsersTab(),
+                      OrdersTab(),
+                      ProductsTab(),
+                      MyAccountTab()
+                    ],
+                  ),
+                ),
               ),
-            ),
-          ),
-        ),
-      ),
+            );
+          }),
       floatingActionButton: CustomFloatingButton(_page, _ordersBloc),
     );
   }

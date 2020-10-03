@@ -58,7 +58,7 @@ class SignUpBloc extends BlocBase with SignUpValidator, LoginValidators {
       titleStore: _titleStoreController.value,
     );
     String password = _passwordController.value;
-    String message;
+    String message = '';
 
     /// Verifica se não está nulo
     if (user.email == null || user.email.isEmpty) {
@@ -67,19 +67,7 @@ class SignUpBloc extends BlocBase with SignUpValidator, LoginValidators {
       return message;
     } else {
       ///Cria usuario
-      PlatformException error = await _createUser(user.email, password);
-      if (error != null)
-        switch (error.code) {
-          case 'ERROR_EMAIL_ALREADY_IN_USE':
-            message = await _signIn(user.email, password);
-            break;
-          case 'ERROR_INVALID_EMAIL':
-            message = 'Formato de email invalido';
-            break;
-          default:
-            message = 'Ocorreu um erro. Tente novamente.';
-        }
-
+      message = await _createUser(user.email, password);
       _loadingController.add(false);
       return message;
     }
@@ -100,7 +88,7 @@ class SignUpBloc extends BlocBase with SignUpValidator, LoginValidators {
       _firebaseUser = authResult.user;
       await _saveDataonFirestore();
       return '';
-    }).catchError((error) async => _errorHandlingSignIn(error));
+    }).catchError((error) => _errorHandlingSignIn(error));
   }
 
   /// Function for save data on Firebase
@@ -124,18 +112,19 @@ class SignUpBloc extends BlocBase with SignUpValidator, LoginValidators {
         .get()
         .then((doc) {
       if (doc.data['name'] != null) {
-        log('doc.data[name] existe. usuario com privilegio');
+        log('Sign-up-bloc: Usuario com privilegio');
         return true;
       } else
-        log('usuario sem privilégio');
+        log('Sign-up-bloc: usuario sem privilégio');
       return false;
     }).catchError((e) => false);
   }
 
   /// Function for create user on Firebase and Firestore with email and pass
 
-  Future<Object> _createUser(String email, String password) async {
-    return await FirebaseAuth.instance
+  Future<String> _createUser(String email, String password) async {
+    String messageError = '';
+    await FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: email, password: password)
         .then((authResult) async {
       log('USUARIO CRIADO');
@@ -143,8 +132,19 @@ class SignUpBloc extends BlocBase with SignUpValidator, LoginValidators {
       _firebaseUser = authResult.user;
       await _saveDataonFirestore();
       log('dados salvos');
-      return null;
-    }).catchError((error) => error);
+    }).catchError((error) async {
+      switch (error.code) {
+        case 'ERROR_EMAIL_ALREADY_IN_USE':
+          messageError = await _signIn(user.email, password);
+          break;
+        case 'ERROR_INVALID_EMAIL':
+          messageError = 'Formato de email invalido';
+          break;
+        default:
+          messageError = 'Ocorreu um erro. Tente novamente.';
+      }
+    });
+    return messageError;
   }
 
   /// Function for error handling when try subscription of user

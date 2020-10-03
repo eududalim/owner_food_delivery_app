@@ -42,15 +42,15 @@ class CustomFloatingButton extends StatelessWidget {
                 })
           ],
         );
-      case 1:
-        return FloatingActionButton(
-          child: Icon(Icons.refresh),
-          backgroundColor: Theme.of(context).primaryColorDark,
-          onPressed: () {
-            //   showDialog(
-            //       context: context, builder: (context) => EditCategoryDialog());
-          },
-        );
+      // case 1:
+      //   return FloatingActionButton(
+      //     child: Icon(Icons.refresh),
+      //     backgroundColor: Theme.of(context).primaryColorDark,
+      //     onPressed: () {
+      //       //   showDialog(
+      //       //       context: context, builder: (context) => EditCategoryDialog());
+      //     },
+      //   );
       default:
         return Container();
     }

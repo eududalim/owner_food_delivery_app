@@ -15,7 +15,7 @@ class SignUpValidator {
     if (name.length > 5) {
       sink.add(name);
     } else {
-      sink.addError("Insira nome comercial completo completo!");
+      sink.addError("Insira nome comercial!");
     }
   });
 

@@ -21,6 +21,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   @override
+  void dispose() {
+    _signUpBloc.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -32,11 +38,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             stream: _signUpBloc.outLoading,
             initialData: false,
             builder: (context, loading) {
-              if (!loading.hasData) {
-                return Container();
-              }
-              if (loading.data &&
-                  loading.connectionState == ConnectionState.waiting) {
+              if (loading.data || !loading.hasData) {
                 return Center(
                     child: CircularProgressIndicator(
                   valueColor:
@@ -106,9 +108,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               ),
                               backgroundColor: Colors.redAccent,
                             ))
-                          : Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => AddressScreen(),
-                            ));
+                          : Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => AddressScreen(),
+                              ));
                     }),
                   ],
                 );

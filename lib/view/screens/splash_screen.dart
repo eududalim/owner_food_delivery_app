@@ -1,3 +1,4 @@
+import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:gerente_loja/blocs/login_bloc.dart';
 import 'package:gerente_loja/view/screens/home/home_screen.dart';
@@ -5,10 +6,9 @@ import 'package:gerente_loja/view/screens/login/login_screen.dart';
 import 'package:splashscreen/splashscreen.dart';
 
 class SplashScreenPage extends StatelessWidget {
-  final _loginBloc = LoginBloc();
-
   @override
   Widget build(BuildContext context) {
+    final LoginBloc _loginBloc = LoginBloc();
     return Scaffold(
       backgroundColor: Colors.grey[850],
       body: StreamBuilder<LoginState>(
@@ -30,8 +30,10 @@ class SplashScreenPage extends StatelessWidget {
                       fontWeight: FontWeight.w500)),
               backgroundColor: Theme.of(context).primaryColor,
               navigateAfterSeconds: snapshot.data == LoginState.SUCCESS
-                  ? HomeScreen()
-                  : LoginScreen(),
+                  ? BlocProvider<LoginBloc>(
+                      bloc: _loginBloc, child: HomeScreen())
+                  : BlocProvider<LoginBloc>(
+                      bloc: _loginBloc, child: LoginScreen()),
             );
           }),
     );

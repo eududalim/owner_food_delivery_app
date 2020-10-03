@@ -14,13 +14,14 @@ class LoginBloc extends BlocBase with LoginValidators {
   final _emailController = BehaviorSubject<String>();
   final _passwordController = BehaviorSubject<String>();
   final _stateController = BehaviorSubject<LoginState>();
+  final _loadingController = BehaviorSubject<bool>();
 
   Stream<String> get outEmail =>
       _emailController.stream.transform(validateEmail);
   Stream<String> get outPassword =>
       _passwordController.stream.transform(validatePassword);
   Stream<LoginState> get outState => _stateController.stream;
-
+  Stream<bool> get outLoading => _loadingController.stream;
   Stream<bool> get outSubmitValid =>
       Observable.combineLatest2(outEmail, outPassword, (a, b) => true);
 
@@ -71,13 +72,14 @@ class LoginBloc extends BlocBase with LoginValidators {
     String message = '';
 
     _stateController.add(LoginState.LOADING);
+    _loadingController.add(true);
     log('LoginState.Loading');
 
     await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password)
         .then((value) {
       _stateController.add(LoginState.SUCCESS);
-      log('LoginState.SUCCESS');
+      // log('LoginState.SUCCESS');
     }).catchError((e) {
       _stateController.add(LoginState.FAIL);
       switch (e.code) {
@@ -104,7 +106,7 @@ class LoginBloc extends BlocBase with LoginValidators {
           message = 'Algo deu errado. Tente novmente.';
       }
     });
-
+    _loadingController.add(false);
     return message;
   }
 
@@ -112,6 +114,30 @@ class LoginBloc extends BlocBase with LoginValidators {
     FirebaseAuth.instance.signOut();
     _stateController.add(LoginState.FAIL);
     log('SignOut finish. LoginState.FAIL');
+  }
+
+  Future<String> recoveryPassword() async {
+    final email = _emailController.value;
+    if (email == null || !email.contains('@')) {
+      return 'Digite um email válido';
+    }
+    String error;
+    await FirebaseAuth.instance
+        .sendPasswordResetEmail(email: email)
+        .catchError((e) {
+      switch (e.code) {
+        case 'ERROR_INVALID_EMAIL':
+          error = 'Email invalido';
+          break;
+        case 'ERROR_USER_NOT_FOUND':
+          error = 'Email não cadastrado ou incorreto';
+          break;
+        default:
+          error =
+              'Ocorreu um erro. Verique se o email está correto e tente novamente';
+      }
+    });
+    return error;
   }
 
   Future<bool> verifyPrivileges(FirebaseUser user) async {
@@ -134,6 +160,7 @@ class LoginBloc extends BlocBase with LoginValidators {
     _emailController.close();
     _passwordController.close();
     _stateController.close();
+    _loadingController.close();
 
     _streamSubscription.cancel();
   }

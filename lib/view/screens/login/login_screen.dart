@@ -1,3 +1,4 @@
+import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gerente_loja/blocs/login_bloc.dart';
@@ -14,106 +15,100 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  LoginBloc _loginBloc;
-
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  @override
-  void initState() {
-    super.initState();
-    _loginBloc = LoginBloc();
-
-    _loginBloc.outState.listen((state) {
-      if (state == LoginState.SUCCESS)
-        Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => HomeScreen()));
-    });
-  }
-
-  @override
-  void dispose() {
-    _loginBloc.dispose();
-    super.dispose();
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _loginBloc.outState.listen((state) {
+  //     if (state == LoginState.SUCCESS)
+  //       Navigator.of(context).pushReplacement(
+  //           MaterialPageRoute(builder: (context) => HomeScreen()));
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
+    final _loginBloc = BlocProvider.of<LoginBloc>(context);
     return Scaffold(
       key: _scaffoldKey,
-      body: StreamBuilder<LoginState>(
-          stream: _loginBloc.outState,
-          initialData: LoginState.LOADING,
-          builder: (context, state) {
-            switch (state.data) {
-              case LoginState.SUCCESS:
-              case LoginState.LOADING:
-                return Center(child: CircularProgressIndicator());
-                break;
-              case LoginState.FAIL:
-              case LoginState.IDLE:
-                return Form(
-                  key: _formKey,
-                  child: Center(
-                    child: ListView(
-                      padding: EdgeInsets.all(30),
-                      shrinkWrap: true,
-                      children: [
-                        HeaderLogin(),
-                        SizedBox(height: 32),
-                        InputField(
-                          done: false,
-                          keyboardType: TextInputType.emailAddress,
-                          icon: Icons.alternate_email,
-                          hint: "Email", // teste
-                          obscure: false,
-                          stream: _loginBloc.outEmail,
-                          onChanged: _loginBloc.changeEmail,
-                        ),
-                        SizedBox(height: 32),
-                        InputField(
-                          done: true,
-                          icon: Icons.lock_outline,
-                          hint: "Senha",
-                          obscure: true,
-                          stream: _loginBloc.outPassword,
-                          onChanged: _loginBloc.changePassword,
-                        ),
-                        ButtonPasswordRecover(),
-                        // Botão de Entrar
-                        StreamBuilder<bool>(
-                          stream: _loginBloc.outSubmitValid,
-                          builder: (context, snapshot) {
-                            return InkWell(
-                                onTap: snapshot.hasData ? _submit : _infoUser,
-                                child: ButtonSignIn());
-                          },
-                        ),
-                        SizedBox(height: 15),
-                        ButtonSignUp(),
-                      ],
+      body: StreamBuilder<bool>(
+          stream: _loginBloc.outLoading,
+          initialData: false,
+          builder: (context, loading) {
+            if (!loading.hasData) return Container();
+            if (loading.data)
+              return Center(
+                  child: CircularProgressIndicator(
+                valueColor:
+                    AlwaysStoppedAnimation(Theme.of(context).primaryColor),
+              ));
+            return Form(
+              key: _formKey,
+              child: Center(
+                child: ListView(
+                  padding: EdgeInsets.all(30),
+                  shrinkWrap: true,
+                  children: [
+                    HeaderLogin(),
+                    SizedBox(height: 32),
+                    InputField(
+                      done: false,
+                      keyboardType: TextInputType.emailAddress,
+                      icon: Icons.alternate_email,
+                      hint: "Email",
+                      obscure: false,
+                      stream: _loginBloc.outEmail,
+                      onChanged: _loginBloc.changeEmail,
                     ),
-                  ),
-                );
-              default:
-            } // switch
-            return Container();
+                    SizedBox(height: 32),
+                    InputField(
+                      done: true,
+                      icon: Icons.lock_outline,
+                      hint: "Senha",
+                      obscure: true,
+                      stream: _loginBloc.outPassword,
+                      onChanged: _loginBloc.changePassword,
+                    ),
+                    ButtonPasswordRecover(_loginBloc.recoveryPassword),
+                    // Botão de Entrar
+                    StreamBuilder<bool>(
+                      stream: _loginBloc.outSubmitValid,
+                      builder: (context, snapshot) {
+                        return InkWell(
+                            onTap: snapshot.hasData
+                                ? () async {
+                                    String error = await _loginBloc.submit();
+                                    if (error.isNotEmpty) {
+                                      _scaffoldKey.currentState
+                                          .showSnackBar(SnackBar(
+                                        content: Text(
+                                          error,
+                                          textAlign: TextAlign.center,
+                                          textScaleFactor: 1.1,
+                                        ),
+                                        backgroundColor: Colors.redAccent,
+                                      ));
+                                    } else {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  HomeScreen()));
+                                    }
+                                  }
+                                : _infoUser,
+                            child: ButtonSignIn());
+                      },
+                    ),
+                    SizedBox(height: 15),
+                    ButtonSignUp(),
+                  ],
+                ),
+              ),
+            );
           }),
     );
-  }
-
-  void _submit() async {
-    String error = await _loginBloc.submit();
-    if (error.isNotEmpty) {
-      _scaffoldKey.currentState.showSnackBar(SnackBar(
-        content: Text(
-          error,
-          textAlign: TextAlign.center,
-          textScaleFactor: 1.1,
-        ),
-        backgroundColor: Colors.redAccent,
-      ));
-    }
   }
 
   void _infoUser() {

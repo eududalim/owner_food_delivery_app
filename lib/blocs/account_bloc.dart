@@ -68,19 +68,31 @@ class AccountBloc extends BlocBase {
     unsavedData['address']['referencia'] = text;
   }
 
-  ////////VALIDAÇÕES//////////////////
+  /// Validações
+  /// Endereço
+  ///
+  String validate(String text) {
+    if (text.isEmpty) return "Campo Obrigatorio!";
+    return null;
+  }
+
+  ///
+  //////// VALIDAÇÕES //////////////
+  /// Dados pessoais /////
   String validateTitleStore(String text) {
     if (text.isEmpty) return "Preencha o título comercial";
     return null;
   }
 
   String validateName(String text) {
-    if (text.isEmpty) return "Preencha o seu nome completo";
+    if (text.isEmpty) return "Preencha com o seu nome completo";
     return null;
   }
 
   String validatePhone(String text) {
-    if (text.isEmpty) return "Preencha o seu numero de celular";
+    const _regExp = r'^\([1-9]{2}\) (?:[2-8]|9[1-9])[0-9]{3}\-[0-9]{4}$';
+    if (!text.contains(RegExp(_regExp)))
+      return "Preencha com o seu numero de celular";
     return null;
   }
 

@@ -49,7 +49,7 @@ class AddressBloc extends BlocBase with AddressValidators {
   /// Functions
   ///
   Future<String> saveAddress() async {
-    String message;
+    String message = '';
     FirebaseUser user = await FirebaseAuth.instance.currentUser();
 
     if (user == null) {
@@ -70,8 +70,7 @@ class AddressBloc extends BlocBase with AddressValidators {
         .collection('admins')
         .document(user.uid)
         .setData({'address': address}).catchError((error) {
-      log('Document not exist');
-      message = 'Document not exist';
+      message = 'Ocorreu um erro. Tente novamente!';
     });
 
     return message;

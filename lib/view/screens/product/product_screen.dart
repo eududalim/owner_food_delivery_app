@@ -4,6 +4,7 @@ import 'package:gerente_loja/blocs/product_bloc.dart';
 import 'package:gerente_loja/models/user_admin_model.dart';
 import 'package:gerente_loja/validators/product_validator.dart';
 import 'package:gerente_loja/view/screens/product/widgets/images_widget.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class ProductScreen extends StatefulWidget {
   final String categoryId;
@@ -30,16 +31,18 @@ class _ProductScreenState extends State<ProductScreen> with ProductValidator {
 
   @override
   Widget build(BuildContext context) {
-    InputDecoration _buildDecoration(String label) {
+    InputDecoration _buildDecoration(String label, {String hint}) {
       return InputDecoration(
-          labelText: label, labelStyle: TextStyle(color: Colors.grey));
+          hintText: hint,
+          labelText: label,
+          labelStyle: TextStyle(color: Colors.grey[700]));
     }
 
-    final _fieldStyle = TextStyle(color: Colors.white, fontSize: 16);
+    final _fieldStyle = TextStyle(fontSize: 16);
 
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: Colors.grey[850],
+      backgroundColor: Colors.grey[50],
       appBar: AppBar(
         elevation: 0,
         title: StreamBuilder<bool>(
@@ -96,7 +99,7 @@ class _ProductScreenState extends State<ProductScreen> with ProductValidator {
                     children: <Widget>[
                       Text(
                         "Imagens",
-                        style: TextStyle(color: Colors.grey, fontSize: 12),
+                        style: TextStyle(color: Colors.grey[700], fontSize: 12),
                       ),
                       ImagesWidget(
                         context: context,
@@ -123,7 +126,8 @@ class _ProductScreenState extends State<ProductScreen> with ProductValidator {
                         initialValue:
                             snapshot.data["price"]?.toStringAsFixed(2),
                         style: _fieldStyle,
-                        decoration: _buildDecoration("Preço"),
+                        decoration:
+                            _buildDecoration("Preço", hint: 'Exemplo: 3.50'),
                         keyboardType:
                             TextInputType.numberWithOptions(decimal: true),
                         onSaved: _productBloc.savePrice,
@@ -134,7 +138,7 @@ class _ProductScreenState extends State<ProductScreen> with ProductValidator {
                       ),
                       /*  Text(
                         "Tamanhos",
-                        style: TextStyle(color: Colors.grey, fontSize: 12),
+                        style: TextStyle(color: Colors.grey[700], fontSize: 12),
                       ),
                       ProductSizes(
                         context: context,
