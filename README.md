@@ -1,16 +1,6 @@
-# gerente_loja
+# food_delivery_app_for_owner
 
-A new Flutter project.
+Um projeto complementar ao food_delivery_app.
 
-## Getting Started
+Esse aplicativo é direcionado a pessoas que queiram fazer seus anuncios e vender no app principal. Eles podem se cadastrar, e cadastrar seus produtos que realizam entregas e então vender mais atráves do app, atigindo mais clientes.
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
