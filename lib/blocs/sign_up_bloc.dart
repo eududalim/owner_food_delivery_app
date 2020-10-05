@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -97,10 +95,7 @@ class SignUpBloc extends BlocBase with SignUpValidator, LoginValidators {
     await Firestore.instance
         .collection('admins')
         .document(user.uid)
-        .setData(user.toMap())
-        .catchError((e) {
-      log(e.toString());
-    });
+        .setData(user.toMap());
   }
 
   /// Function for verify if user have privilegies
@@ -112,11 +107,9 @@ class SignUpBloc extends BlocBase with SignUpValidator, LoginValidators {
         .get()
         .then((doc) {
       if (doc.data['name'] != null) {
-        log('Sign-up-bloc: Usuario com privilegio');
         return true;
       } else
-        log('Sign-up-bloc: usuario sem privilégio');
-      return false;
+        return false;
     }).catchError((e) => false);
   }
 
@@ -127,11 +120,9 @@ class SignUpBloc extends BlocBase with SignUpValidator, LoginValidators {
     await FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: email, password: password)
         .then((authResult) async {
-      log('USUARIO CRIADO');
       user.uid = authResult.user.uid;
       _firebaseUser = authResult.user;
       await _saveDataonFirestore();
-      log('dados salvos');
     }).catchError((error) async {
       switch (error.code) {
         case 'ERROR_EMAIL_ALREADY_IN_USE':

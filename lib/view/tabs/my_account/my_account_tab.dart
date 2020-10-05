@@ -117,7 +117,7 @@ class _MyAccountTabState extends State<MyAccountTab> {
                       //ENDEREÇO///////////////////////////////////////////////
                       SizedBox(height: 10),
                       Divider(),
-                      SizedBox(height: 10),
+                      SizedBox(height: 5),
                       Text(
                         'ENDEREÇO',
                         style: _fieldStyle,

@@ -121,10 +121,8 @@ class AccountBloc extends BlocBase {
         .document(uid)
         .updateData(dataAddress)
         .whenComplete(() {
-      // _loadingController.add(false);
       sucess = true;
     }).catchError((e) {
-      //  _loadingController.add(false);
       sucess = false;
     });
 
