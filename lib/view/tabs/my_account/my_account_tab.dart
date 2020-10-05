@@ -77,7 +77,7 @@ class _MyAccountTabState extends State<MyAccountTab> {
                               )),
                         ],
                       ),
-                      SizedBox(height: 25),
+                      SizedBox(height: 10),
                       TextFormField(
                         enabled: enabled.data,
                         initialValue: snapshot.data['name'],
@@ -115,23 +115,13 @@ class _MyAccountTabState extends State<MyAccountTab> {
                       ),
 
                       //ENDEREÇO///////////////////////////////////////////////
-                      SizedBox(height: 20),
+                      SizedBox(height: 10),
                       Divider(),
-                      SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Divider(
-                            color: Colors.grey,
-                          ),
-                          Text(
-                            'ENDEREÇO',
-                            style: _fieldStyle,
-                          ),
-                          Divider(
-                            color: Colors.grey,
-                          ),
-                        ],
+                      SizedBox(height: 10),
+                      Text(
+                        'ENDEREÇO',
+                        style: _fieldStyle,
+                        textAlign: TextAlign.center,
                       ),
                       TextFormField(
                           enabled: enabled.data,
@@ -204,7 +194,7 @@ class _MyAccountTabState extends State<MyAccountTab> {
                         onSaved: _accountBloc.saveReferencia,
                         validator: _accountBloc.validate,
                       ),
-                      SizedBox(height: 20),
+                      SizedBox(height: 8),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [

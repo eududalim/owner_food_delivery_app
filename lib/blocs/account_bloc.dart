@@ -12,7 +12,12 @@ class AccountBloc extends BlocBase {
   Stream<bool> get outEnabled => _enabledController.stream;
   Stream<bool> get outLoading => _loadingController.stream;
 
-  Map<String, dynamic> unsavedData = {
+  Map<String, dynamic> dataAddress = {
+    'name': '',
+    'titleStore': '',
+    'phone': '',
+    'email': '',
+    'uid': '',
     'address': {
       'rua': '',
       'bairro': '',
@@ -24,48 +29,48 @@ class AccountBloc extends BlocBase {
   };
 
   void saveTitleStore(String title) {
-    unsavedData["titleStore"] = title;
+    dataAddress["titleStore"] = title;
   }
 
   void saveName(String name) {
-    unsavedData["name"] = name;
+    dataAddress["name"] = name;
   }
 
   void saveEmail(String email) {
-    unsavedData["email"] = email;
+    dataAddress["email"] = email;
   }
 
   void savePhone(String phone) {
-    unsavedData["phone"] = phone;
+    dataAddress["phone"] = phone;
   }
 
 //////ENDEREÇO///////////////////////////////
   void saveRua(String text) {
-    unsavedData['address']['rua'] = text;
+    dataAddress['address']['rua'] = text;
   }
 
   void saveNumRua(String text) {
-    unsavedData['address']['numRua'] = text;
+    dataAddress['address']['numRua'] = text;
   }
 
   void saveCidade(String text) {
-    unsavedData['address']['cidade'] = text;
+    dataAddress['address']['cidade'] = text;
   }
 
   void saveEstado(String text) {
-    unsavedData['address']['estado'] = text;
+    dataAddress['address']['estado'] = text;
   }
 
   void saveBairro(String text) {
-    unsavedData['address']['bairro'] = text;
+    dataAddress['address']['bairro'] = text;
   }
 
   void saveComplemento(String text) {
-    unsavedData['address']['complemento'] = text;
+    dataAddress['address']['complemento'] = text;
   }
 
   void saveReferencia(String text) {
-    unsavedData['address']['referencia'] = text;
+    dataAddress['address']['referencia'] = text;
   }
 
   /// Validações
@@ -109,14 +114,12 @@ class AccountBloc extends BlocBase {
     _enabledController.add(false);
     _loadingController.add(true);
 
-    unsavedData[''] = unsavedData['address'];
-
     bool sucess;
 
     await Firestore.instance
         .collection('admins')
         .document(uid)
-        .setData(unsavedData)
+        .updateData(dataAddress)
         .whenComplete(() {
       // _loadingController.add(false);
       sucess = true;
@@ -130,7 +133,7 @@ class AccountBloc extends BlocBase {
   }
 
   AccountBloc(UserAdminModel user) {
-    unsavedData = {
+    dataAddress = {
       'name': user.name,
       'titleStore': user.titleStore,
       'phone': user.phone,
@@ -138,7 +141,7 @@ class AccountBloc extends BlocBase {
       'uid': user.uid,
       'address': user.address
     };
-    _dataController.add(unsavedData);
+    _dataController.add(dataAddress);
   }
 
   @override

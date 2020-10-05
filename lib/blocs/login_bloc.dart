@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -73,7 +72,6 @@ class LoginBloc extends BlocBase with LoginValidators {
 
     _stateController.add(LoginState.LOADING);
     _loadingController.add(true);
-    log('LoginState.Loading');
 
     await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password)
@@ -113,7 +111,6 @@ class LoginBloc extends BlocBase with LoginValidators {
   void signOut() {
     FirebaseAuth.instance.signOut();
     _stateController.add(LoginState.FAIL);
-    log('SignOut finish. LoginState.FAIL');
   }
 
   Future<String> recoveryPassword() async {
@@ -147,11 +144,9 @@ class LoginBloc extends BlocBase with LoginValidators {
         .get()
         .then((doc) {
       if (doc.data['name'] != null) {
-        log('doc.data[name] existe. usuario com privilegio');
         return true;
       } else
-        log('usuario sem privilégio');
-      return false;
+        return false;
     }).catchError((e) => false);
   }
 
