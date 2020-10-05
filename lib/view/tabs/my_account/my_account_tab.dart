@@ -2,7 +2,6 @@ import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gerente_loja/blocs/account_bloc.dart';
-import 'package:gerente_loja/blocs/address_bloc.dart';
 import 'package:gerente_loja/blocs/login_bloc.dart';
 import 'package:gerente_loja/models/user_admin_model.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
@@ -23,7 +22,6 @@ class _MyAccountTabState extends State<MyAccountTab> {
   @override
   Widget build(BuildContext context) {
     final _loginBloc = BlocProvider.of<LoginBloc>(context);
-    final _address = AddressBloc();
     final _fieldStyle = TextStyle(fontSize: 16);
     final _formKey = GlobalKey<FormState>();
     final _maskPhone = MaskTextInputFormatter(mask: '(##) #####-####');

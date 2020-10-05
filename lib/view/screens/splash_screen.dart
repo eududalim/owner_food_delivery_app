@@ -8,7 +8,7 @@ import 'package:splashscreen/splashscreen.dart';
 class SplashScreenPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final LoginBloc _loginBloc = LoginBloc();
+    final LoginBloc _loginBloc = BlocProvider.of<LoginBloc>(context);
     return Scaffold(
       backgroundColor: Colors.grey[850],
       body: StreamBuilder<LoginState>(
@@ -30,10 +30,8 @@ class SplashScreenPage extends StatelessWidget {
                       fontWeight: FontWeight.w500)),
               backgroundColor: Theme.of(context).primaryColor,
               navigateAfterSeconds: snapshot.data == LoginState.SUCCESS
-                  ? BlocProvider<LoginBloc>(
-                      bloc: _loginBloc, child: HomeScreen())
-                  : BlocProvider<LoginBloc>(
-                      bloc: _loginBloc, child: LoginScreen()),
+                  ? HomeScreen()
+                  : LoginScreen(),
             );
           }),
     );

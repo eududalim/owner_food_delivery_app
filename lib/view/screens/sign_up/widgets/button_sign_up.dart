@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gerente_loja/view/screens/address/address_screen.dart';
 
 class ButtonSaveSignUp extends StatelessWidget {
   final Function _onPressed;

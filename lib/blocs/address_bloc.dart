@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -69,7 +67,7 @@ class AddressBloc extends BlocBase with AddressValidators {
     await Firestore.instance
         .collection('admins')
         .document(user.uid)
-        .setData({'address': address}).catchError((error) {
+        .updateData({'address': address}).catchError((error) {
       message = 'Ocorreu um erro. Tente novamente!';
     });
 

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gerente_loja/blocs/login_bloc.dart';
 import 'package:gerente_loja/view/screens/sign_up/sign_up_screen.dart';
 
 class ButtonSignUp extends StatelessWidget {

@@ -109,7 +109,7 @@ class AccountBloc extends BlocBase {
     _enabledController.add(false);
     _loadingController.add(true);
 
-    ///  unsavedData[''] = unsavedData['address']
+    unsavedData[''] = unsavedData['address'];
 
     bool sucess;
 
