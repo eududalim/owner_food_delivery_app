@@ -31,6 +31,9 @@
 .pub/
 /build/
 .gradle/
+ .firebaserc
+ firebase.json
+ functions/
 
 
 # Web related
