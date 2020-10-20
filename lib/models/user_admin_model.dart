@@ -1,6 +1,7 @@
 class UserAdminModel {
   String phone;
   String titleStore;
+  String cpf;
   String name;
   String email;
   String uid;
@@ -19,6 +20,7 @@ class UserAdminModel {
       this.email,
       this.name,
       this.uid,
+      this.cpf,
       this.address});
 
   Map<String, dynamic> toMap() {
@@ -28,6 +30,7 @@ class UserAdminModel {
       'titleStore': titleStore,
       'name': name,
       'email': email,
+      'cpf': cpf,
       'address': address
     };
   }

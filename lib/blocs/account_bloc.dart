@@ -114,20 +114,20 @@ class AccountBloc extends BlocBase {
     _enabledController.add(false);
     _loadingController.add(true);
 
-    bool sucess;
+    bool success;
 
     await Firestore.instance
         .collection('admins')
         .document(uid)
         .updateData(dataAddress)
         .whenComplete(() {
-      sucess = true;
+      success = true;
     }).catchError((e) {
-      sucess = false;
+      success = false;
     });
 
     _loadingController.add(false);
-    return sucess;
+    return success;
   }
 
   AccountBloc(UserAdminModel user) {

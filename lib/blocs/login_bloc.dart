@@ -60,7 +60,7 @@ class LoginBloc extends BlocBase with LoginValidators {
           _stateController.add(LoginState.IDLE);
         }
       });
-    } on Exception catch (e) {
+    } on Exception catch (_) {
       _stateController.add(LoginState.FAIL);
     }
   }

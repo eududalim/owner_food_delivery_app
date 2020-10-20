@@ -22,7 +22,7 @@ class SplashScreenPage extends StatelessWidget {
               image: Image(
                 image: AssetImage('assets/delivery-icon-secondary.png'),
               ),
-              title: Text('Vem Delivery \n App do Anunciantes',
+              title: Text('Vem Delivery \n App do Anunciante',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       color: Colors.white,

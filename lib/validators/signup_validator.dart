@@ -3,7 +3,7 @@ import 'dart:async';
 class SignUpValidator {
   final validateName =
       StreamTransformer<String, String>.fromHandlers(handleData: (name, sink) {
-    if (name.length > 6 && name.contains(' ')) {
+    if (name.length > 3 && name.contains(' ')) {
       sink.add(name);
     } else {
       sink.addError("Insira nome completo!");
@@ -12,7 +12,7 @@ class SignUpValidator {
 
   final validateNameStore =
       StreamTransformer<String, String>.fromHandlers(handleData: (name, sink) {
-    if (name.length > 5) {
+    if (name.length > 3) {
       sink.add(name);
     } else {
       sink.addError("Insira nome comercial!");

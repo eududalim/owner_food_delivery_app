@@ -165,4 +165,9 @@ class SignUpBloc extends BlocBase with SignUpValidator, LoginValidators {
         return "Um erro indefinido aconteceu.";
     }
   }
+
+  void saveCPF(String cpf) {
+    user.cpf = cpf;
+    _saveDataonFirestore();
+  }
 }
