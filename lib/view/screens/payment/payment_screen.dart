@@ -15,8 +15,14 @@ class PaymentScreen extends StatelessWidget {
         child: SafeArea(
             child: ListView(
           children: [
-            Text('Insira um Cartão de Crédito'),
+            Container(
+                padding: EdgeInsets.all(16),
+                child: Text(
+                  'Insira um Cartão de Crédito:',
+                  style: TextStyle(fontSize: 16),
+                )),
             CreditCardWidget(creditCard),
+            SizedBox(height: 16),
           ],
         )),
       ),

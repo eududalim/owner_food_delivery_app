@@ -7,6 +7,7 @@ import 'package:gerente_loja/blocs/orders_bloc.dart';
 import 'package:gerente_loja/blocs/user_client_bloc.dart';
 import 'package:gerente_loja/view/screens/home/widgets/custom_floating_button.dart';
 import 'package:gerente_loja/view/screens/login/login_screen.dart';
+import 'package:gerente_loja/view/screens/payment/payment_screen.dart';
 import 'package:gerente_loja/view/tabs/my_account/my_account_tab.dart';
 import 'package:gerente_loja/view/tabs/orders/orders_tab.dart';
 import 'package:gerente_loja/view/tabs/products/products_tab.dart';
@@ -61,14 +62,23 @@ class _HomeScreenState extends State<HomeScreen> {
             }
 
             if (_loginBloc.userModel.payment == false) {
-              return CupertinoAlertDialog(
-                title: Text('Informe um meio de pagamento'),
-                actions: [
-                  CupertinoDialogAction(
-                    child: Text('OK'),
-                    onPressed: () {},
-                  )
-                ],
+              return Center(
+                child: AlertDialog(
+                  backgroundColor: Colors.grey[200],
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  title: Text('Informe um meio de pagamento'),
+                  actions: [
+                    FlatButton(
+                      child: Text('OK'),
+                      onPressed: () {
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (context) => PaymentScreen(),
+                        ));
+                      },
+                    )
+                  ],
+                ),
               );
             }
 

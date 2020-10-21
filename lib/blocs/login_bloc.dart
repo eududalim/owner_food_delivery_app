@@ -74,6 +74,10 @@ class LoginBloc extends BlocBase with LoginValidators {
     final password = _passwordController.value;
     String message = '';
 
+    if (email == null || password == null) {
+      return 'Preencha os campos corretamente';
+    }
+
     _stateController.add(LoginState.LOADING);
     _loadingController.add(true);
 

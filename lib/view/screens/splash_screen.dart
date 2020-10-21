@@ -10,7 +10,6 @@ class SplashScreenPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final LoginBloc _loginBloc = BlocProvider.of<LoginBloc>(context);
     return Scaffold(
-      backgroundColor: Colors.grey[850],
       body: StreamBuilder<LoginState>(
           stream: _loginBloc.outState,
           initialData: LoginState.LOADING,
@@ -25,10 +24,10 @@ class SplashScreenPage extends StatelessWidget {
               title: Text('Vem\nApp do Anunciante',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                      color: Colors.white,
+                      color: Theme.of(context).primaryColor,
                       fontSize: 23,
-                      fontWeight: FontWeight.w500)),
-              backgroundColor: Theme.of(context).primaryColor,
+                      fontWeight: FontWeight.w400)),
+              backgroundColor: Theme.of(context).primaryColor.withAlpha(100),
               navigateAfterSeconds: snapshot.data == LoginState.SUCCESS
                   ? HomeScreen()
                   : LoginScreen(),
