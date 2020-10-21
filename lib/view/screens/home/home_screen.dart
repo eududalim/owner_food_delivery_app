@@ -21,6 +21,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   PageController _pageController;
   int _page = 0;
+  bool dialog = false;
 
   UserClientBloc _userBloc;
   OrdersBloc _ordersBloc;
@@ -44,6 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final _loginBloc = BlocProvider.of<LoginBloc>(context);
+
     return Scaffold(
       backgroundColor: Colors.grey[100],
       bottomNavigationBar: CustomBottomNavigationBar(_page, _pageController),
@@ -57,6 +59,19 @@ class _HomeScreenState extends State<HomeScreen> {
                     bloc: _loginBloc, child: LoginScreen()),
               ));
             }
+
+            if (_loginBloc.userModel.payment == false) {
+              return CupertinoAlertDialog(
+                title: Text('Informe um meio de pagamento'),
+                actions: [
+                  CupertinoDialogAction(
+                    child: Text('OK'),
+                    onPressed: () {},
+                  )
+                ],
+              );
+            }
+
             return SafeArea(
               child: BlocProvider<UserClientBloc>(
                 bloc: _userBloc,

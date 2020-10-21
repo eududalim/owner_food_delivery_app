@@ -18,16 +18,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _loginBloc.outState.listen((state) {
-  //     if (state == LoginState.SUCCESS)
-  //       Navigator.of(context).pushReplacement(
-  //           MaterialPageRoute(builder: (context) => HomeScreen()));
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
     final _loginBloc = BlocProvider.of<LoginBloc>(context);
@@ -73,34 +63,25 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     ButtonPasswordRecover(_loginBloc.recoveryPassword),
                     // Botão de Entrar
-                    StreamBuilder<bool>(
-                      stream: _loginBloc.outSubmitValid,
-                      builder: (context, snapshot) {
-                        return InkWell(
-                            onTap: snapshot.hasData
-                                ? () async {
-                                    String error = await _loginBloc.submit();
-                                    if (error.isNotEmpty) {
-                                      _scaffoldKey.currentState
-                                          .showSnackBar(SnackBar(
-                                        content: Text(
-                                          error,
-                                          textAlign: TextAlign.center,
-                                          textScaleFactor: 1.1,
-                                        ),
-                                        backgroundColor: Colors.redAccent,
-                                      ));
-                                    } else {
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  HomeScreen()));
-                                    }
-                                  }
-                                : _infoUser,
-                            child: ButtonSignIn());
-                      },
-                    ),
+                    InkWell(
+                        onTap: () async {
+                          String error = await _loginBloc.submit();
+                          if (error.isNotEmpty) {
+                            _scaffoldKey.currentState.showSnackBar(SnackBar(
+                              content: Text(
+                                error,
+                                textAlign: TextAlign.center,
+                                textScaleFactor: 1.1,
+                              ),
+                              backgroundColor: Colors.redAccent,
+                            ));
+                          } else {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => HomeScreen()));
+                          }
+                        },
+                        //: _infoUser,
+                        child: ButtonSignIn()),
                     SizedBox(height: 15),
                     ButtonSignUp(),
                   ],

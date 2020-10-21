@@ -5,6 +5,7 @@ class UserAdminModel {
   String name;
   String email;
   String uid;
+  bool payment;
   Map address = {
     'cidade': '',
     'bairro': '',
@@ -21,6 +22,7 @@ class UserAdminModel {
       this.name,
       this.uid,
       this.cpf,
+      this.payment = true,
       this.address});
 
   Map<String, dynamic> toMap() {

@@ -6,6 +6,7 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -27,5 +28,13 @@ void main() {
     });
 
     print('Finish');
+  });
+
+  test('Teste de Cloud Functions', () async {
+    final response = await CloudFunctions.instance
+        .getHttpsCallable(functionName: 'helloWorld')
+        .call();
+
+    print(response.data);
   });
 }

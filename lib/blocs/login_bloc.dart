@@ -49,6 +49,8 @@ class LoginBloc extends BlocBase with LoginValidators {
               userModel.titleStore = doc.data['titleStore'];
               userModel.email = doc.data['email'];
               userModel.uid = user.uid;
+              userModel.cpf = doc.data['cpf'];
+              userModel.payment = doc.data['payment'];
               userModel.address = doc.data['address'];
             });
             _stateController.add(LoginState.SUCCESS);
@@ -63,6 +65,8 @@ class LoginBloc extends BlocBase with LoginValidators {
     } on Exception catch (_) {
       _stateController.add(LoginState.FAIL);
     }
+
+    _isPay();
   }
 
   Future<String> submit() async {
@@ -148,6 +152,20 @@ class LoginBloc extends BlocBase with LoginValidators {
       } else
         return false;
     }).catchError((e) => false);
+  }
+
+  _isPay() {
+    Firestore.instance
+        .collection('admins')
+        .document(userModel.uid)
+        .snapshots()
+        .listen((doc) {
+      try {
+        userModel.payment = doc.data['payment'];
+      } catch (_) {
+        userModel.payment = false;
+      }
+    });
   }
 
   @override
