@@ -61,27 +61,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ));
             }
 
-            if (_loginBloc.userModel.payment == false) {
-              return Center(
-                child: AlertDialog(
-                  backgroundColor: Colors.grey[200],
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  title: Text('Informe um meio de pagamento'),
-                  actions: [
-                    FlatButton(
-                      child: Text('OK'),
-                      onPressed: () {
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (context) => PaymentScreen(),
-                        ));
-                      },
-                    )
-                  ],
-                ),
-              );
-            }
-
             return SafeArea(
               child: BlocProvider<UserClientBloc>(
                 bloc: _userBloc,

@@ -52,6 +52,7 @@ class LoginBloc extends BlocBase with LoginValidators {
               userModel.cpf = doc.data['cpf'];
               userModel.payment = doc.data['payment'];
               userModel.address = doc.data['address'];
+              userModel.saveToken();
             });
             _stateController.add(LoginState.SUCCESS);
           } else {
@@ -65,8 +66,6 @@ class LoginBloc extends BlocBase with LoginValidators {
     } on Exception catch (_) {
       _stateController.add(LoginState.FAIL);
     }
-
-    _isPay();
   }
 
   Future<String> submit() async {
@@ -158,19 +157,22 @@ class LoginBloc extends BlocBase with LoginValidators {
     }).catchError((e) => false);
   }
 
-  _isPay() {
-    Firestore.instance
-        .collection('admins')
-        .document(userModel.uid)
-        .snapshots()
+  Stream<bool> get isPay => Firestore.instance
+          .collection('admins')
+          .document(userModel.uid)
+          .snapshots()
+          .transform(StreamTransformer.fromHandlers(handleData: (data, sink) {
+        sink.add(data.data['payment']);
+      }));
+
+  /* 
         .listen((doc) {
       try {
         userModel.payment = doc.data['payment'];
       } catch (_) {
         userModel.payment = false;
       }
-    });
-  }
+    }); */
 
   @override
   void dispose() {

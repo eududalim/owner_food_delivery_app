@@ -24,10 +24,10 @@ class SplashScreenPage extends StatelessWidget {
               title: Text('Vem\nApp do Anunciante',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                      color: Theme.of(context).primaryColor,
+                      color: Colors.white,
                       fontSize: 23,
                       fontWeight: FontWeight.w400)),
-              backgroundColor: Theme.of(context).primaryColor.withAlpha(100),
+              backgroundColor: Theme.of(context).primaryColorDark,
               navigateAfterSeconds: snapshot.data == LoginState.SUCCESS
                   ? HomeScreen()
                   : LoginScreen(),

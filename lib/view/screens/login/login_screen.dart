@@ -7,6 +7,7 @@ import 'package:gerente_loja/view/screens/login/widgets/button_pass_rec.dart';
 import 'package:gerente_loja/view/screens/login/widgets/button_sign_in.dart';
 import 'package:gerente_loja/view/screens/login/widgets/button_sign_up.dart';
 import 'package:gerente_loja/view/screens/login/widgets/header_login.dart';
+import 'package:gerente_loja/view/screens/payment/payment_screen.dart';
 import 'package:gerente_loja/view/widgets/input_field.dart';
 
 class LoginScreen extends StatefulWidget {

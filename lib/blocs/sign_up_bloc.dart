@@ -168,6 +168,7 @@ class SignUpBloc extends BlocBase with SignUpValidator, LoginValidators {
 
   void saveCPF(String cpf) {
     user.cpf = cpf;
+    print(user.cpf);
     _saveDataonFirestore();
   }
 }

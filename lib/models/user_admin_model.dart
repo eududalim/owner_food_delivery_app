@@ -1,3 +1,7 @@
+import 'dart:developer';
+
+import 'package:firebase_messaging/firebase_messaging.dart';
+
 class UserAdminModel {
   String phone;
   String titleStore;
@@ -35,5 +39,10 @@ class UserAdminModel {
       'cpf': cpf,
       'address': address
     };
+  }
+
+  void saveToken() async {
+    final token = await FirebaseMessaging().getToken();
+    log(token.toString());
   }
 }

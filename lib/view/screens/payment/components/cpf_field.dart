@@ -6,12 +6,14 @@ import 'package:gerente_loja/blocs/sign_up_bloc.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class CpfField extends StatelessWidget {
+  final SignUpBloc _signUpBloc = SignUpBloc();
+
   @override
   Widget build(BuildContext context) {
-    final userManager = BlocProvider.of<SignUpBloc>(context);
     final cpfMask = MaskTextInputFormatter(mask: '###.###.###-##');
 
     return Card(
+      elevation: 6,
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -31,7 +33,7 @@ class CpfField extends StatelessWidget {
                   hintText: '000.000.000-00', isDense: true),
               keyboardType: TextInputType.number,
               inputFormatters: [
-                WhitelistingTextInputFormatter.digitsOnly,
+                // WhitelistingTextInputFormatter.digitsOnly,
                 cpfMask
               ],
               validator: (cpf) {
@@ -40,7 +42,7 @@ class CpfField extends StatelessWidget {
                 else if (!CPFValidator.isValid(cpf)) return 'CPF Inválido';
                 return null;
               },
-              onSaved: userManager.saveCPF,
+              onSaved: _signUpBloc.saveCPF,
             )
           ],
         ),

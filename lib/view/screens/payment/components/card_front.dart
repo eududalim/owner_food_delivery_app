@@ -49,7 +49,7 @@ class CardFront extends StatelessWidget {
                     textInputType: TextInputType.number,
                     bold: true,
                     inputFormatters: [
-                      WhitelistingTextInputFormatter.digitsOnly,
+                      //    WhitelistingTextInputFormatter.digitsOnly,
                       creditCardFormatter
                     ],
                     validator: (number) {
