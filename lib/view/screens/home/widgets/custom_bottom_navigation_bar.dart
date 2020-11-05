@@ -23,13 +23,12 @@ class CustomBottomNavigationBar extends StatelessWidget {
           },
           items: [
             //       BottomNavigationBarItem(
-            //           icon: Icon(Icons.people_outline), title: Text("Clientes")),
+            //           icon: Icon(Icons.people_outline),label: Text("Clientes")),
             BottomNavigationBarItem(
-                icon: Icon(Icons.shopping_cart), title: Text("Pedidos")),
+                icon: Icon(Icons.shopping_cart), label: 'Pedidos'),
+            BottomNavigationBarItem(icon: Icon(Icons.list), label: "Produtos"),
             BottomNavigationBarItem(
-                icon: Icon(Icons.list), title: Text("Produtos")),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.person_outline), title: Text('Minha conta'))
+                icon: Icon(Icons.person_outline), label: 'Minha conta')
           ]),
     );
   }

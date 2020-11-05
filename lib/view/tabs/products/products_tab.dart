@@ -24,57 +24,25 @@ class _ProductsTabState extends State<ProductsTab>
 
     final _loginBloc = BlocProvider.of<LoginBloc>(context);
 
-    return StreamBuilder<bool>(
-        stream: _loginBloc.isPay,
-        initialData: true,
-        builder: (context, snapshot) {
-          if (!snapshot.data) {
-            return Container(
-              color: Colors.black26,
-              child: CupertinoAlertDialog(
-                title: Text('Pagamento pendente!'),
-                actions: [
-                  FlatButton(
-                    textColor: Colors.red,
-                    child: Text('Sair'),
-                    onPressed: () {
-                      _loginBloc.signOut();
-                    },
-                  ),
-                  FlatButton(
-                    textColor: Theme.of(context).primaryColorDark,
-                    child: Text('Realizar pagamento'),
-                    onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => PaymentScreen(),
-                      ));
-                    },
-                  )
-                ],
-              ),
-            );
-          }
-
-          return StreamBuilder<QuerySnapshot>(
-            stream: Firestore.instance.collection("category").snapshots(),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData)
-                return Center(
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation(Colors.white),
-                  ),
-                );
-              return ListView.builder(
-                shrinkWrap: true,
-                itemCount: snapshot.data.documents.length,
-                itemBuilder: (context, index) {
-                  return CategoryTile(
-                      snapshot.data.documents[index], _loginBloc.userModel);
-                },
-              );
-            },
+    return StreamBuilder<QuerySnapshot>(
+      stream: Firestore.instance.collection("category").snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData)
+          return Center(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation(Colors.white),
+            ),
           );
-        });
+        return ListView.builder(
+          shrinkWrap: true,
+          itemCount: snapshot.data.documents.length,
+          itemBuilder: (context, index) {
+            return CategoryTile(
+                snapshot.data.documents[index], _loginBloc.userModel);
+          },
+        );
+      },
+    );
   }
 
   @override

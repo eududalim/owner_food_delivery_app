@@ -1,5 +1,7 @@
 import 'dart:developer';
+import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 class UserAdminModel {
@@ -41,8 +43,17 @@ class UserAdminModel {
     };
   }
 
-  void saveToken() async {
+  Future<void> saveToken() async {
     final token = await FirebaseMessaging().getToken();
-    log(token.toString());
+    await Firestore.instance
+        .collection('admins')
+        .document(this.uid)
+        .collection('tokens')
+        .document(token)
+        .setData({
+      'token': token,
+      'updateAt': FieldValue.serverTimestamp(),
+      'platform': Platform.operatingSystem,
+    });
   }
 }

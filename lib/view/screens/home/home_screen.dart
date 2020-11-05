@@ -7,7 +7,6 @@ import 'package:gerente_loja/blocs/orders_bloc.dart';
 import 'package:gerente_loja/blocs/user_client_bloc.dart';
 import 'package:gerente_loja/view/screens/home/widgets/custom_floating_button.dart';
 import 'package:gerente_loja/view/screens/login/login_screen.dart';
-import 'package:gerente_loja/view/screens/payment/payment_screen.dart';
 import 'package:gerente_loja/view/tabs/my_account/my_account_tab.dart';
 import 'package:gerente_loja/view/tabs/orders/orders_tab.dart';
 import 'package:gerente_loja/view/tabs/products/products_tab.dart';
@@ -55,10 +54,12 @@ class _HomeScreenState extends State<HomeScreen> {
           builder: (context, state) {
             if (state.data == LoginState.FAIL ||
                 state.data == LoginState.IDLE) {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => BlocProvider<LoginBloc>(
-                    bloc: _loginBloc, child: LoginScreen()),
-              ));
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BlocProvider<LoginBloc>(
+                        bloc: _loginBloc, child: LoginScreen()),
+                  ));
             }
 
             return SafeArea(

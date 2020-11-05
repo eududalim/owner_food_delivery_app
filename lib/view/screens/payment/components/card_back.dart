@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gerente_loja/models/credit_card.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 import 'card_text_field.dart';
 
@@ -12,6 +13,7 @@ class CardBack extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final maskCvv = MaskTextInputFormatter(mask: '###');
     return Card(
       clipBehavior: Clip.antiAlias,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -39,9 +41,7 @@ class CardBack extends StatelessWidget {
                       initialValue: creditCard.securityCode,
                       hint: '123',
                       maxLength: 3,
-                      inputFormatters: [
-                        WhitelistingTextInputFormatter.digitsOnly,
-                      ],
+                      inputFormatters: [maskCvv],
                       textAlign: TextAlign.end,
                       textInputType: TextInputType.number,
                       validator: (cvv) {

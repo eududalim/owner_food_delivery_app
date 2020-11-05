@@ -7,7 +7,6 @@ import 'package:gerente_loja/view/screens/login/widgets/button_pass_rec.dart';
 import 'package:gerente_loja/view/screens/login/widgets/button_sign_in.dart';
 import 'package:gerente_loja/view/screens/login/widgets/button_sign_up.dart';
 import 'package:gerente_loja/view/screens/login/widgets/header_login.dart';
-import 'package:gerente_loja/view/screens/payment/payment_screen.dart';
 import 'package:gerente_loja/view/widgets/input_field.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -24,17 +23,24 @@ class _LoginScreenState extends State<LoginScreen> {
     final _loginBloc = BlocProvider.of<LoginBloc>(context);
     return Scaffold(
       key: _scaffoldKey,
-      body: StreamBuilder<bool>(
-          stream: _loginBloc.outLoading,
-          initialData: false,
-          builder: (context, loading) {
-            if (!loading.hasData) return Container();
-            if (loading.data)
+      body: StreamBuilder<LoginState>(
+          stream: _loginBloc.outState,
+          initialData: LoginState.IDLE,
+          builder: (context, state) {
+            if (!state.hasData) return Container();
+            if (state.data == LoginState.LOADING)
               return Center(
                   child: CircularProgressIndicator(
                 valueColor:
                     AlwaysStoppedAnimation(Theme.of(context).primaryColor),
               ));
+            if (state.data == LoginState.SUCCESS) {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HomeScreen(),
+                  ));
+            }
             return Form(
               key: _formKey,
               child: Center(
@@ -93,6 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  // ignore: unused_element
   void _infoUser() {
     _scaffoldKey.currentState.showSnackBar(SnackBar(
       content: Text(

@@ -1,4 +1,3 @@
-import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cpf_cnpj_validator/cpf_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

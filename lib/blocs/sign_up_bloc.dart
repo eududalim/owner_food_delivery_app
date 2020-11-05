@@ -18,8 +18,6 @@ class SignUpBloc extends BlocBase with SignUpValidator, LoginValidators {
 
   UserAdminModel user;
 
-  FirebaseUser _firebaseUser;
-
   Stream<String> get outEmail =>
       _emailController.stream.transform(validateEmail);
   Stream<String> get outPassword =>
@@ -83,7 +81,6 @@ class SignUpBloc extends BlocBase with SignUpValidator, LoginValidators {
         return 'Usuario já cadastrado. Faça login para continuar.';
       } else
         user.uid = authResult.user.uid;
-      _firebaseUser = authResult.user;
       await _saveDataonFirestore();
       return '';
     }).catchError((error) => _errorHandlingSignIn(error));
@@ -121,7 +118,6 @@ class SignUpBloc extends BlocBase with SignUpValidator, LoginValidators {
         .createUserWithEmailAndPassword(email: email, password: password)
         .then((authResult) async {
       user.uid = authResult.user.uid;
-      _firebaseUser = authResult.user;
       await _saveDataonFirestore();
     }).catchError((error) async {
       switch (error.code) {
