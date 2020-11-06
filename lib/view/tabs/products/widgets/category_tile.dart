@@ -16,7 +16,6 @@ class CategoryTile extends StatelessWidget {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: Card(
-        // color: Colors.grey[100],
         elevation: 5,
         child: ExpansionTile(
           //Titulo da categoria

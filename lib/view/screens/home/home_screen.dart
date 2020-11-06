@@ -54,12 +54,13 @@ class _HomeScreenState extends State<HomeScreen> {
           builder: (context, state) {
             if (state.data == LoginState.FAIL ||
                 state.data == LoginState.IDLE) {
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => BlocProvider<LoginBloc>(
-                        bloc: _loginBloc, child: LoginScreen()),
-                  ));
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => LoginScreen(),
+                    ));
+              });
             }
 
             return SafeArea(

@@ -35,11 +35,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     AlwaysStoppedAnimation(Theme.of(context).primaryColor),
               ));
             if (state.data == LoginState.SUCCESS) {
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => HomeScreen(),
-                  ));
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HomeScreen(),
+                    ));
+              });
             }
             return Form(
               key: _formKey,

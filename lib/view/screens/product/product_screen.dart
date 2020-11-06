@@ -66,7 +66,7 @@ class _ProductScreenState extends State<ProductScreen> with ProductValidator {
                             ? null
                             : () {
                                 _productBloc.deleteProduct();
-                                Navigator.of(context).pop();
+                                Navigator.pop(context);
                               },
                       );
                     });
