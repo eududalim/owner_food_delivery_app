@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -21,17 +23,16 @@ class OrdersBloc extends BlocBase {
   }
 
   void _addOrdersListener() {
+    log('addOrdersListener chamado');
     String uid;
     FirebaseAuth.instance.currentUser().then((value) => uid = value.uid);
 
     _firestore
-        .collection("admins")
-        .document(uid)
         .collection("orders")
+        .where('adminId', isEqualTo: uid)
         .snapshots()
         .listen((snapshot) {
-      //  _firestore.collection("orders").snapshots().listen((snapshot) {
-      snapshot.documentChanges.forEach((change) {
+      snapshot.documentChanges.forEach((change) async {
         String oid = change.document.documentID;
 
         switch (change.type) {
@@ -47,7 +48,6 @@ class OrdersBloc extends BlocBase {
             break;
         }
       });
-
       _sort();
     });
   }

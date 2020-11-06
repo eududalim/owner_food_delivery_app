@@ -309,16 +309,15 @@ export const addMessage = functions.https.onCall( async (data, context) => {
 });
 
 export const onNewOrder = functions.firestore.document("/orders/{orderId}").onCreate(async (snapshot, context) => {
-    if (!context.auth) {
-        return;
-    }
-
-    const adminId = context.auth.uid;
+    
+    const orderId = context.params.orderId;
+    
+    const document = await admin.firestore().collection("orders").doc(orderId).get();
+    const userData = document.data() || {};
+    const adminId = userData.adminId;
 
     console.log(adminId);
 
-    const orderId = context.params.orderId;
-//snapshot.data().adminId === adminId
     if (true) {
         const tokensAdmin: string[] = await getDeviceTokens(adminId);
 

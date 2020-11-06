@@ -165,15 +165,6 @@ class LoginBloc extends BlocBase with LoginValidators {
         sink.add(data.data['payment']);
       }));
 
-  /* 
-        .listen((doc) {
-      try {
-        userModel.payment = doc.data['payment'];
-      } catch (_) {
-        userModel.payment = false;
-      }
-    }); */
-
   @override
   void dispose() {
     _emailController.close();
