@@ -59,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
       flushbarStyle: FlushbarStyle.GROUNDED,
       isDismissible: true,
       backgroundColor: Theme.of(context).primaryColor,
-      duration: const Duration(seconds: 5),
+      duration: const Duration(seconds: 3),
       icon: Icon(
         Icons.shopping_cart,
         color: Colors.white,
