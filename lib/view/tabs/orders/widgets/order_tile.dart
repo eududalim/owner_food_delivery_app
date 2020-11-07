@@ -22,6 +22,7 @@ class OrderTile extends StatelessWidget {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: Card(
+        color: order.data["status"] != 3 ? Colors.white : Colors.grey,
         child: ExpansionTile(
           key: Key(order.documentID),
           initiallyExpanded: order.data["status"] != 3,

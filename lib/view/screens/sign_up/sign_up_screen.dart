@@ -108,7 +108,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               ),
                               backgroundColor: Colors.redAccent,
                             ))
-                          : Navigator.pushReplacement(
+                          : Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => AddressScreen(),

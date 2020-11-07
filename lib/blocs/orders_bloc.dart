@@ -18,18 +18,16 @@ class OrdersBloc extends BlocBase {
 
   SortCriteria _criteria;
 
-  OrdersBloc() {
+  String _adminId;
+
+  OrdersBloc(this._adminId) {
     _addOrdersListener();
   }
 
   void _addOrdersListener() {
-    log('addOrdersListener chamado');
-    String uid;
-    FirebaseAuth.instance.currentUser().then((value) => uid = value.uid);
-
     _firestore
         .collection("orders")
-        .where('adminId', isEqualTo: uid)
+        .where('adminId', isEqualTo: _adminId)
         .snapshots()
         .listen((snapshot) {
       snapshot.documentChanges.forEach((change) async {

@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:bloc_pattern/bloc_pattern.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -25,13 +29,58 @@ class _HomeScreenState extends State<HomeScreen> {
 
   UserClientBloc _userBloc;
   OrdersBloc _ordersBloc;
+  LoginBloc _loginBloc;
+
+  void configFCM() {
+    final fcm = FirebaseMessaging();
+
+    if (Platform.isIOS) {
+      fcm.requestNotificationPermissions(
+          const IosNotificationSettings(provisional: true));
+    }
+
+    fcm.configure(onLaunch: (Map<String, dynamic> message) async {
+      print('onLaunch $message');
+    }, onResume: (Map<String, dynamic> message) async {
+      print('onResume $message');
+    }, onMessage: (Map<String, dynamic> message) async {
+      showNotification(
+        message['notification']['title'] as String,
+        message['notification']['body'] as String,
+      );
+    });
+  }
+
+  void showNotification(String title, String message) {
+    Flushbar(
+      title: title,
+      message: message,
+      flushbarPosition: FlushbarPosition.TOP,
+      flushbarStyle: FlushbarStyle.GROUNDED,
+      isDismissible: true,
+      backgroundColor: Theme.of(context).primaryColor,
+      duration: const Duration(seconds: 5),
+      icon: Icon(
+        Icons.shopping_cart,
+        color: Colors.white,
+      ),
+    ).show(context);
+  }
 
   @override
   initState() {
     super.initState();
     _pageController = PageController();
     _userBloc = UserClientBloc();
-    _ordersBloc = OrdersBloc();
+
+    configFCM();
+  }
+
+  @override
+  void didChangeDependencies() {
+    _loginBloc = BlocProvider.of<LoginBloc>(context);
+    _ordersBloc = OrdersBloc(_loginBloc.userModel.uid);
+    super.didChangeDependencies();
   }
 
   @override
@@ -44,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final _loginBloc = BlocProvider.of<LoginBloc>(context);
+    // final _loginBloc = BlocProvider.of<LoginBloc>(context);
 
     return Scaffold(
       backgroundColor: Colors.grey[100],
